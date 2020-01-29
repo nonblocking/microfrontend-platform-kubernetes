@@ -33,7 +33,7 @@ At very least you should set:
  * *PROJECT_ID* -> this is the Project ID in GCP
  * *ZONE* -> The zone in which the cluster should be created (this also affects the billing)
 
-## Run the setup cluster script
+## Setup the cluster and common services
 
     ./setup-cluster.sh
 
@@ -52,13 +52,12 @@ At very least you should set:
 
 ## Check if the platform is up and running
 
- * Open the GCP console and navigate to Kubernetes Engine -> Worksloads. You
+ * Open the GCP console and navigate to *Kubernetes Engine* -> *Worksloads*. You
    should see something like this:
-
- TODO:
-
-
- * Enter http://<ingress-ip> in your browser
+   ![Workloads](./images/GKE_workloads.png)
+ * Switch to the *Services & Ingress* and click on the endpoint URL in the *mashroom-portal-ingress* row
+   -> The portal login mask should appear
+   ![Ingress](./images/GKE_ingress.png)
  * Login as admin/admin
  * On an arbitrary page click *Add App*, search for *Microfrontend Demo1* and add via Drag'n'Drop:
    ![Microfrontends](./images/microfrontends.png)

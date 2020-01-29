@@ -27,7 +27,7 @@ helm install rabbitmq-amqp10 \
 
 gcloud filestore instances create ${FILESTORE_ID} \
     --project=${PROJECT_ID} \
-    --location=${ZONE} \
+    --zone=${ZONE} \
     --tier=STANDARD \
     --file-share=name="${FILESTORE_SHARE_NAME}",capacity=1TB \
     --network=name="default"

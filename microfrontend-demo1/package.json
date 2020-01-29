@@ -72,7 +72,7 @@
         "build:client": "webpack --config webpack/webpack.prod.js",
         "type-check": "tsc --noEmit",
         "lint": "eslint --ext .ts --ext .tsx --fix --quiet ./src",
-        "docker:create-image": "source ../set-env.sh && npm run build && cross-var docker build -t gcr.io/${PROJECT_ID}/microfrontend-demo1:latest -t gcr.io/${PROJECT_ID}/microfrontend-demo1:${npm_package_version} .",
+        "docker:create-image": "source ../set-env.sh && npm install && npm run build && cross-var docker build -t gcr.io/${PROJECT_ID}/microfrontend-demo1:latest -t gcr.io/${PROJECT_ID}/microfrontend-demo1:${npm_package_version} .",
         "docker:push": "source ../set-env.sh && npm run docker:create-image && docker push gcr.io/${PROJECT_ID}/microfrontend-demo1:latest && cross-var docker push gcr.io/$PROJECT_ID/microfrontend-demo1:${npm_package_version}",
         "docker:start": "source ../set-env.sh && docker run -e NODE_ENV=production -p 6088:6088 gcr.io/${PROJECT_ID}/microfrontend-demo1",
         "deploy": "source ../set-env.sh && npm run docker:push && cross-var envsub kubernetes/microservice-demo1-deployment_template.yaml kubernetes/microservice-demo1-deployment.yaml && cd kubernetes && ./deploy.sh"
