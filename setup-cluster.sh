@@ -32,6 +32,10 @@ gcloud filestore instances create ${FILESTORE_ID} \
     --file-share=name="${FILESTORE_SHARE_NAME}",capacity=1TB \
     --network=name="default"
 
+
+# Sometimes it takes a few seconds until the IP address is available
+sleep 5
+
 FILESTORE_IP=`gcloud filestore instances describe ${FILESTORE_ID} \
      --project=${PROJECT_ID} \
      --zone=${ZONE} \
