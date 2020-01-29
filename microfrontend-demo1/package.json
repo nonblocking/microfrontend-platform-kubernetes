@@ -1,0 +1,104 @@
+{
+    "name": "microfrontend-demo1",
+    "description": "Microfrontend Demo 1 - shows some random Chuck Norris choke from http://api.icndb.com/jokes/random",
+    "version": "1.0.0",
+    "homepage": "https://www.mashroom-server.com",
+    "repository": "github:nonblocking/mashroom-microfrontend-platform-kubernetes",
+    "license": "MIT",
+    "private": true,
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "pino": "^5.15.3",
+        "request": "^2.48.4"
+    },
+    "devDependencies": {
+        "@mashroom/mashroom": "^1.3.0",
+        "@mashroom/mashroom-portal": "^1.3.0",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0",
+        "@babel/cli": "^7.8.3",
+        "@babel/core": "^7.8.3",
+        "@babel/preset-env": "^7.8.3",
+        "@babel/preset-react": "^7.8.3",
+        "@babel/register": "^7.8.3",
+        "babel-register-ts": "^7.0.0",
+        "babel-eslint": "^10.0.3",
+        "babel-jest": "^24.9.0",
+        "babel-loader": "^8.0.6",
+        "@babel/preset-typescript": "^7.8.3",
+        "typescript": "^3.7.5",
+        "@typescript-eslint/eslint-plugin": "^2.16.0",
+        "@typescript-eslint/parser": "^2.16.0",
+        "@types/node": "^10.17.13",
+        "@types/express": "^4.17.2",
+        "@types/request": "^2.48.4",
+        "@types/pino": "^5.15.3",
+        "@types/react": "^16.9.19",
+        "@types/react-dom": "^16.9.5",
+        "@types/webpack": "^4.41.3",
+        "@types/webpack-dev-middleware": "^2.0.3",
+        "@types/webpack-hot-middleware": "^2.25.0",
+        "concurrently": "^5.0.2",
+        "cross-var": "^1.1.0",
+        "css-loader": "^3.4.2",
+        "eslint": "^6.8.0",
+        "eslint-plugin-import": "^2.20.0",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.18.0",
+        "html-webpack-plugin": "^3.2.0",
+        "jest": "^24.9.0",
+        "node-sass": "^4.13.1",
+        "react-hot-loader": "^4.12.18",
+        "sass-loader": "^8.0.2",
+        "style-loader": "^1.1.3",
+        "supervisor": "^0.12.0",
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-middleware": "^3.7.2",
+        "webpack-dev-server": "^3.10.1",
+        "webpack-hot-middleware": "^2.25.0",
+        "webpack-merge": "^4.2.2",
+        "cross-env": "^6.0.3",
+        "envsub": "^4.0.7"
+    },
+    "scripts": {
+        "start": "node dist/server/index.js",
+        "dev": "cross-env NODE_ENV=development supervisor --watch src -- -r 'babel-register-ts' src/server/index.ts",
+        "build": "concurrently \"npm run type-check\" \"npm run lint\" \"npm run build:server\" \"npm run build:client\"",
+        "build:server": "babel ./src/server -d dist/server --copy-files --extensions .ts",
+        "build:client": "webpack --config webpack/webpack.prod.js",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint --ext .ts --ext .tsx --fix --quiet ./src",
+        "docker:create-image": "source ../set-env.sh && npm run build && cross-var docker build -t gcr.io/${PROJECT_ID}/microfrontend-demo1:latest -t gcr.io/${PROJECT_ID}/microfrontend-demo1:${npm_package_version} .",
+        "docker:push": "source ../set-env.sh && npm run docker:create-image && docker push gcr.io/${PROJECT_ID}/microfrontend-demo1:latest && cross-var docker push gcr.io/$PROJECT_ID/microfrontend-demo1:${npm_package_version}",
+        "docker:start": "source ../set-env.sh && docker run -e NODE_ENV=production -p 6088:6088 gcr.io/${PROJECT_ID}/microfrontend-demo1",
+        "deploy": "source ../set-env.sh && npm run docker:push && cross-var envsub kubernetes/microservice-demo1-deployment_template.yaml kubernetes/microservice-demo1-deployment.yaml && cd kubernetes && ./deploy.sh"
+    },
+    "mashroom": {
+        "plugins": [
+            {
+                "name": "Microfrontend Demo1",
+                "type": "portal-app",
+                "category": "Demo",
+                "bootstrap": "startupMicrofrontendDemo1",
+                "resources": {
+                    "js": [
+                        "bundle.js"
+                    ]
+                },
+                "defaultConfig": {
+                    "resourcesRoot": "./dist/frontend",
+                    "restProxies": {
+                        "bff": {
+                            "targetUri": "http://localhost:6088/api"
+                        }
+                    },
+                    "appConfig": {}
+                }
+            }
+        ]
+    }
+}

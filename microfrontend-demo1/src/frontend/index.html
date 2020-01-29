@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Microfrontend Demo 1</title>
+</head>
+<body>
+<div id="portal-app-placeholder"></div>
+
+<script>
+    (function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            var portalAppSetup = {
+                user: {},
+                restProxyPaths: {
+                    bff: '/api'
+                },
+                appConfig: {}
+            };
+            var clientServices = {
+                restService: {
+                    basePath: '',
+                    withBasePath(path) {
+                        this.basePath = path;
+                        return this;
+                    },
+                    get(path) {
+                        return fetch(this.basePath + path, { credentials: 'same-origin' }).then((res) => res.json());
+                    }
+                }
+            };
+
+            window.startupMicrofrontendDemo1(document.getElementById('portal-app-placeholder'), portalAppSetup, clientServices);
+        });
+    })();
+</script>
+</body>
+</html>

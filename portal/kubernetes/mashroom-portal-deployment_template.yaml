@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mashroom-portal
+    namespace: default
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: mashroom-portal
+    template:
+        metadata:
+            labels:
+                app: mashroom-portal
+        spec:
+            containers:
+                -   name: mashroom-portal
+                    image: gcr.io/${PROJECT_ID}/mashroom-portal:${npm_package_version}
+                    imagePullPolicy: Always
+                    env:
+                        -   name: NODE_ENV
+                            value: production
+                        -   name: SHOW_ENV_AND_VERSIONS
+                            value: "true"
+                        -   name: REDIS_HOST
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: REDIS_HOST
+                        -   name: REDIS_PORT
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: REDIS_PORT
+                        -   name: RABBITMQ_HOST
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: RABBITMQ_HOST
+                        -   name: RABBITMQ_PORT
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: RABBITMQ_PORT
+                        -   name: RABBITMQ_USER
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: RABBITMQ_USER
+                        -   name: RABBITMQ_PASSWORD
+                            valueFrom:
+                                secretKeyRef:
+                                    name: rabbitmq-amqp10
+                                    key: rabbitmq-password
+                    resources:
+                        requests:
+                            cpu: 100m
+                            memory: 120Mi
+                    ports:
+                        -   containerPort: 5050
+                    volumeMounts:
+                        -   name: mashroom-data
+                            mountPath: /var/shared/mashroom-data
+                    readinessProbe:
+                        httpGet:
+                            path: /mashroom/health/ready
+                            port: 5050
+                        initialDelaySeconds: 5
+                        periodSeconds: 60
+            volumes:
+                -   name: mashroom-data
+                    persistentVolumeClaim:
+                        claimName: mashroom-data
+            serviceAccountName: mashroom-portal

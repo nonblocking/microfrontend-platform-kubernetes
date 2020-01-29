@@ -1,0 +1,70 @@
+{
+    "name": "Mashroom Portal Quickstart",
+    "port": 5050,
+    "pluginPackageFolders": [
+        {
+            "path": "../../node_modules/@mashroom"
+        }
+    ],
+    "ignorePlugins": [
+        "Mashroom Session Redis Provider",
+        "Mashroom Messaging External Provider AMQP"
+    ],
+    "indexPage": "/portal",
+    "plugins": {
+        "Mashroom Portal WebApp": {
+            "adminApp": "Mashroom Portal Admin App",
+            "defaultTheme": "Mashroom Portal Default Theme",
+            "warnBeforeAuthenticationExpiresSec": 120
+        },
+        "Mashroom Portal Default Theme": {
+            "showEnvAndVersions": true
+        },
+        "Mashroom Session Middleware": {
+            "provider": "memory",
+            "session": {
+                "cookie": {
+                    "maxAge": 3600000
+                }
+            }
+        },
+        "Mashroom Security Services": {
+            "provider": "Mashroom Security Simple Provider",
+            "acl": "./acl.json",
+            "loginPage": "/login"
+        },
+        "Mashroom Security Simple Provider": {
+            "users": "./users.json",
+            "authenticationTimeoutSec": 1200
+        },
+        "Mashroom Helmet Middleware": {
+
+        },
+        "Mashroom Storage Services": {
+            "provider": "Mashroom Storage Filestore Provider"
+        },
+        "Mashroom Storage Filestore Provider": {
+            "dataFolder": "../../data/storage"
+        },
+        "Mashroom Internationalization Services": {
+            "availableLanguages": ["en", "de"],
+            "defaultLanguage": "en"
+        },
+        "Mashroom Http Proxy Services": {
+            "rejectUntrustedCerts": false,
+            "poolMaxSockets": 10
+        },
+        "Mashroom WebSocket Services": {
+            "restrictToRoles": null,
+            "enableKeepAlive": false,
+            "maxConnections": 20
+        },
+        "Mashroom Messaging Services": {
+            "externalProvider": null,
+            "externalTopics": [],
+            "userPrivateBaseTopic": "user",
+            "enableWebSockets": true,
+            "topicACL": "./topic_acl.json"
+        }
+    }
+}

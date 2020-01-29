@@ -1,0 +1,12 @@
+{
+    "/portal/**": {
+        "*": {
+            "allow": ["Authenticated"]
+        }
+    },
+    "/mashroom/admin/**": {
+        "*": {
+            "allow": ["Administrator"]
+        }
+    }
+}

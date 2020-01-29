@@ -1,0 +1,5 @@
+
+node_modules
+dist
+
+/kubernetes/microservice-demo1-deployment.yaml

@@ -1,0 +1,9 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: mashroom-portal-ingress
+    namespace: default
+spec:
+    backend:
+        serviceName: mashroom-portal
+        servicePort: 80
