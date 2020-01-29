@@ -3,7 +3,7 @@
     "description": "Microfrontend Demo 1 - shows some random Chuck Norris choke from http://api.icndb.com/jokes/random",
     "version": "1.0.0",
     "homepage": "https://www.mashroom-server.com",
-    "repository": "github:nonblocking/mashroom-microfrontend-platform-kubernetes",
+    "repository": "github:nonblocking/microfrontend-platform-kubernetes",
     "license": "MIT",
     "private": true,
     "engines": {
