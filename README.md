@@ -36,9 +36,10 @@ The outlined platform consists of:
      * @mashroom/mashroom-websocket
      * @mashroom/mashroom-messaging
      * @mashroom/mashroom-messaging-external-provider-amqp
- * A [Redis](https://redis.io/) cluster for session storage
- * A [RabbitMQ](https://www.rabbitmq.com/) message broker
- * A bunch of Microfrontends
+ * A [Redis](https://redis.io/) cluster for Portal session storage
+ * A [RabbitMQ](https://www.rabbitmq.com/) as message broker
+ * A block storage (e.g. an external NFS store) for the Portal configuration
+ * A bunch *Mashroom Portal* compliant of Microfrontends
 
 ## Setup Guides
 
@@ -47,15 +48,15 @@ The outlined platform consists of:
 
 ## Notes
 
- * Typically there would be a Identity Provider, either the existing one of your company or for example a [Keycloak](https://www.keycloak.org/)
-   as part of the platform. Either way you need to write a security provider plugin to connect it to the *Mashroom Server*.
+ * Typically there would be an Identity Provider, either the existing one of your company or for example a [Keycloak](https://www.keycloak.org/)
+   as part of the platform. Either way, you need to write a security provider plugin to connect it to the *Mashroom Server*
    (A OpenID Connect security provider is on the [Mashroom Roadmap](https://github.com/nonblocking/mashroom/blob/master/ROADMAP.md))
  * Instead of an external NFS store you might consider a cloud native store such as [Gluster](https://www.gluster.org/) or [StorageOS](https://storageos.com/).
    You could also store the Portal configuration in a database like [mongoDB](https://www.mongodb.com/) but then you have to write a new
-   storage provider plugin. (A mongoDB storage provider is also on the [Mashroom Roadmap](https://github.com/nonblocking/mashroom/blob/master/ROADMAP.md))
+   storage provider plugin (A mongoDB storage provider is also on the [Mashroom Roadmap](https://github.com/nonblocking/mashroom/blob/master/ROADMAP.md))
  * A CI/CD pipeline to deploy the Portal and the Microfrontends automatically after code changes.
    You could deploy Jenkins on the cluster, install [Spinnaker](https://www.spinnaker.io/)
-   or use a Cloud service such as [Google Cloud Build](https://github.com/marketplace/google-cloud-build).
+   or use a Cloud service such as [Google Cloud Build](https://github.com/marketplace/google-cloud-build)
  * You should use namespaces to separate common stuff such as Redis from your Microfrontends
  * The Ingress should be used for SSL/TLS termination (and maybe name based virtual hosts)
 
