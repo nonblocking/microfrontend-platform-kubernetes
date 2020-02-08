@@ -43,6 +43,9 @@ The outlined platform consists of:
 
 ## Setup Guides
 
+> Note: The setup guides assume you're working in a shell. So all the manual steps and scripts work on
+> Linux and macOS, but they also should work with any BASH emulation on Windows.
+
  * [Manual Setup Guide](SETUP_MANUAL.md)
  * [Setup Guide for Google Cloud Platform](SETUP_GCP.md)
 
