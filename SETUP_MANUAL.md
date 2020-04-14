@@ -22,7 +22,7 @@ And add at least the following Helm repos:
 ### Static IP addresses/Domains
 
 You need two static IP addresses to expose Keycloak and the Portal.
-In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used
+In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used.
 
 ## Setup the common services
 
@@ -71,7 +71,6 @@ You can use *keycloak/keycloak-ingress.yaml* as a template and than install it l
  * Login to Keycloak and setup a new Realm and a OpenID connect client
  * Enter https://<PORTAL_IP>/* as allowed redirect url
  * In the *Settings* tab set Access Type *confidential*
- * Make sure the *Valid Redirect URIs* contains your redirect URL (e.g. http://localhost:5050/*)
  * In the *Credentials* tab you'll find the client secret
  * To map the roles to a scope/claim goto _Mappers_, click *Add Builtin* and add a *realm roles* mapper.
    In the field *Token Claim Name* enter *roles*. Also check *Add to ID token*.
