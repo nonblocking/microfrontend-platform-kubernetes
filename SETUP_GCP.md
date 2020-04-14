@@ -7,7 +7,6 @@ Create a [GCP](https://cloud.google.com/) account and:
 
  * Create a new project
  * Enable Kubernetes Engine
- * Enable Filestore API
 
 Then install locally:
 
@@ -18,11 +17,18 @@ Then install locally:
 
 And add at least the following Helm repos:
 
-    helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    helm repo add codecentric https://codecentric.github.io/helm-charts
+    helm repo add bitnami https://charts.bitnami.com/bitnami
 
 Init the gcloud CLI:
 
     gcloud init
+
+## Clone this repo
+
+    git clone https://github.com/nonblocking/microfrontend-platform-kubernetes.git
+    cd microfrontend-platform-kubernetes
 
 ##  Adapt the environment variables
 
@@ -36,6 +42,17 @@ At very least you should set:
 ## Setup the cluster and common services
 
     ./setup-cluster.sh
+
+## Setup Keycloak Realm
+
+Wait until
+
+    kubectl get pods keycloak-0
+
+shows Ready 1/1. Then execute:
+
+    cd keycloak
+    ./setup-mashroom-realm.sh
 
 ## Deploy the Mashroom Portal
 
@@ -56,7 +73,7 @@ At very least you should set:
    should see something like this:
    ![Workloads](./images/GKE_workloads.png)
  * Switch to the *Services & Ingress* and click on the endpoint URL in the *mashroom-portal-ingress* row
-   -> The portal login mask should appear
+   -> The Keycloak login mask should appear
    ![Ingress](./images/GKE_ingress.png)
  * Login as admin/admin
  * On an arbitrary page click *Add App*, search for *Microfrontend Demo1* and add via Drag'n'Drop:
@@ -73,3 +90,5 @@ At very least you should set:
 
    After opening http://localhost:15672 and logging in you should be able to see the bindings on the *amqp.topic* exchange:
    ![The platform](./images/rabbitmq_bindings.png)
+ * To add new users: Find the *keycloak-ingress* address and open it in a browser. Click on *Administration Console* and log
+   in as admin/test (or whatever you've set as admin credentials in *set-env.sh*)

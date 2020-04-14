@@ -7,8 +7,12 @@
         }
     ],
     "ignorePlugins": [
+        "Mashroom OpenID Connect Security Provider",
+        "Mashroom Storage MongoDB Provider",
         "Mashroom Session Redis Provider",
-        "Mashroom Messaging External Provider AMQP"
+        "Mashroom Messaging External Provider AMQP",
+        "Mashroom Portal Remote App Registry Kubernetes",
+        "Mashroom Portal Remote App Registry Kubernetes Webapp"
     ],
     "indexPage": "/portal",
     "plugins": {

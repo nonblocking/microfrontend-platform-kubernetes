@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
     name: mashroom-portal-ingress
     namespace: default
+    annotations:
+        kubernetes.io/ingress.global-static-ip-name: portal-global-ip
 spec:
     backend:
         serviceName: mashroom-portal

@@ -1,4 +1,4 @@
-FROM node:10-slim
+FROM node:12-slim
 WORKDIR /opt/app
 COPY package.json package-lock.json ./
 COPY ./dist ./dist

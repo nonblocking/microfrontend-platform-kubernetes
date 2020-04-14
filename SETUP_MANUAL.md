@@ -7,7 +7,7 @@ If you use the *Google Kubernetes Engine* use the [GCP Setup Guide](SETUP_GCP.md
 
 ## Requirements
 
-Locally installed:
+### Installed
 
  * kubectl (installed and configured)
  * [docker](https://www.docker.com)
@@ -16,24 +16,69 @@ Locally installed:
 And add at least the following Helm repos:
 
     helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    helm repo add codecentric https://codecentric.github.io/helm-charts
+    helm repo add bitnami https://charts.bitnami.com/bitnami
 
-Cluster:
+### Static IP addresses/Domains
 
- * Make sure there is a [Persistent Volume Class](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) available with the access mode *ReadWriteMany*
+You need two static IP addresses to expose Keycloak and the Portal.
+In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used
 
 ## Setup the common services
 
 ### Redis
 
-    helm install redis --set usePassword=false stable/redis
+    helm install redis --set usePassword=false bitnami/redis
 
 ### RabbitMQ
 
     helm install rabbitmq-amqp10 \
-      --set rabbitmq.username=<username>,rabbitmq.password=<password>,rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
-      stable/rabbitmq
+      --set replicas=2,rabbitmq.username=<username>,rabbitmq.password=<password>,rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
+      bitnami/rabbitmq
 
-### Create a ConfigMap with the platform services
+### MongoDB
+
+    helm install mongodb \
+      --set replicaSet.enabled=true,mongodbDatabase=<portal_db_name>,mongodbUsername=<portal_db_user>,mongodbPassword=<portal_db_password**> \
+      bitnami/mongodb
+
+### MySQL
+
+    helm install mysql \
+      --set replicaSet.enabled=true,mysqlDatabase=<keycloak_db_name>,mysqlUser=<keycloak_db_user>,mysqlPassword=<keycloak_db_password> \
+        stable/mysql
+
+### Keycloak
+
+#### Deployment
+
+Adapt the *keycloak/value.yaml* for your needs.
+
+    helm install keycloak \
+      -f keycloak/values.yaml \
+      --set keycloak.persistence.dbName=<keycloak_db_name>,keycloak.persistence.dbUser=<keycloak_db_user>,keycloak.persistence.dbPassword=<keycloak_db_password>,\
+    keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=<keycloak_admin_user>,keycloak.password=<keycloak_admin_password> \
+      codecentric/keycloak
+
+#### Ingress
+
+You can use *keycloak/keycloak-ingress.yaml* as a template and than install it like this:
+
+    kubectl apply -f keycloak-ingress.yaml
+
+#### Setup Realm
+
+ * Login to Keycloak and setup a new Realm and a OpenID connect client
+ * Enter https://<PORTAL_IP>/* as allowed redirect url
+ * In the *Settings* tab set Access Type *confidential*
+ * Make sure the *Valid Redirect URIs* contains your redirect URL (e.g. http://localhost:5050/*)
+ * In the *Credentials* tab you'll find the client secret
+ * To map the roles to a scope/claim goto _Mappers_, click *Add Builtin* and add a *realm roles* mapper.
+   In the field *Token Claim Name* enter *roles*. Also check *Add to ID token*.
+ * Add a role *mashroom-admin*
+ * Add a bunch of users and give some of them the admin role
+
+### Create a ConfigMap with the platform common services
 
 ```yaml
 echo "apiVersion: v1
@@ -43,32 +88,15 @@ metadata:
   namespace: default
 data:
   REDIS_HOST: redis-master.default
-  REDIS_PORT: "6379"
+  REDIS_PORT: '6379'
   RABBITMQ_HOST: rabbitmq-amqp10.default
-  RABBITMQ_PORT: "5672"
-  RABBITMQ_USER: <rabbitmq-user>
+  RABBITMQ_PORT: '5672'
+  RABBITMQ_USER: $RABBITMQ_USER
+  MONGODB_CONNECTION_URI: mongodb://<portal_db_user>:<portal_db_password>@mongodb-primary-0.mongodb-headless.default:27017,mongodb-secondary-0.mongodb-headless.default:27017/<portal_db_name>?replicaSet=rs0
+  KEYCLOAK_URL: https://<KEYCLOAK_IP>
 ```
 
 ## Deploy the Mashroom Portal
-
-### Create a PVC for the shared data
-
-It requires the access mode *ReadWriteMany*.
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-    name: mashroom-data
-    namespace: default
-spec:
-    storageClassName: <your-storage-class>
-    accessModes:
-        - ReadWriteMany
-    resources:
-        requests:
-            storage: 10Gi
-```
 
 ### Create a service account
 
@@ -125,7 +153,7 @@ You can use
 
 as template and adapt it to your needs. Important is:
 
- * Don't forget to add the *volumes* declaration and the *volumeMount*
+ * Don't forget to add correct PORTAL_URL environment variable (the public URL!)
  * Add the *serviceAccountName*
 
 ## Deploy the Microfrontends
@@ -151,8 +179,8 @@ as template and adapt it to your needs.
 
 ## Check if the platform is up and running
 
- * Enter http://<ingress-ip> in your browser
- * Login as admin/admin
+ * Enter https://<PORTAL_IP> in your browser
+ * Login as admin user
  * On an arbitrary page click *Add App*, search for *Microfrontend Demo1* and add via Drag'n'Drop:
    ![Microfrontends](./images/microfrontends.png)
  * You can check the registered Microfrontends on http://<ingress-ip>/portal-remote-app-registry-kubernetes

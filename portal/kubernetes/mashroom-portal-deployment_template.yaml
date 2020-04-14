@@ -13,6 +13,7 @@ spec:
             labels:
                 app: mashroom-portal
         spec:
+            serviceAccountName: mashroom-portal
             containers:
                 -   name: mashroom-portal
                     image: gcr.io/${PROJECT_ID}/mashroom-portal:${npm_package_version}
@@ -22,6 +23,24 @@ spec:
                             value: production
                         -   name: SHOW_ENV_AND_VERSIONS
                             value: "true"
+                        -   name: PORTAL_URL
+                            value: ${PORTAL_URL}
+                        -   name: KEYCLOAK_URL
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: KEYCLOAK_URL
+                        -   name: KEYCLOAK_REALM
+                            value: ${KEYCLOAK_REALM}
+                        -   name: KEYCLOAK_CLIENT_ID
+                            value: ${KEYCLOAK_CLIENT_ID}
+                        -   name: KEYCLOAK_CLIENT_SECRET
+                            value: ${KEYCLOAK_CLIENT_SECRET}
+                        -   name: MONGODB_CONNECTION_URI
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: MONGODB_CONNECTION_URI
                         -   name: REDIS_HOST
                             valueFrom:
                                 configMapKeyRef:
@@ -58,17 +77,9 @@ spec:
                             memory: 120Mi
                     ports:
                         -   containerPort: 5050
-                    volumeMounts:
-                        -   name: mashroom-data
-                            mountPath: /var/shared/mashroom-data
                     readinessProbe:
                         httpGet:
                             path: /mashroom/health/ready
                             port: 5050
                         initialDelaySeconds: 5
                         periodSeconds: 60
-            volumes:
-                -   name: mashroom-data
-                    persistentVolumeClaim:
-                        claimName: mashroom-data
-            serviceAccountName: mashroom-portal

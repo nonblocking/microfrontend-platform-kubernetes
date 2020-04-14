@@ -1,5 +1,11 @@
 
 const {
+    PORTAL_URL,
+    KEYCLOAK_URL,
+    KEYCLOAK_REALM,
+    KEYCLOAK_CLIENT_ID,
+    KEYCLOAK_CLIENT_SECRET,
+    MONGODB_CONNECTION_URI,
     REDIS_HOST,
     REDIS_PORT,
     RABBITMQ_HOST,
@@ -8,8 +14,6 @@ const {
     RABBITMQ_PASSWORD,
     SHOW_ENV_AND_VERSIONS,
 } = process.env;
-
-const DATA_FOLDER = '/var/shared/mashroom-data';
 
 module.exports = {
     name: 'Mashroom Portal Quickstart',
@@ -20,6 +24,10 @@ module.exports = {
         },
     ],
     ignorePlugins: [
+        "Mashroom Security Simple Provider",
+        "Mashroom Storage Filestore Provider",
+        "Mashroom Portal Remote App Registry",
+        "Mashroom Portal Remote App Registry Webapp"
     ],
     indexPage: '/portal',
     plugins: {
@@ -47,22 +55,28 @@ module.exports = {
             },
         },
         'Mashroom Security Services': {
-            provider: 'Mashroom Security Simple Provider',
+            provider: 'Mashroom OpenID Connect Security Provider',
             acl: './acl.json',
             loginPage: '/login'
         },
-        'Mashroom Security Simple Provider': {
-            users: './users.json',
-            authenticationTimeoutSec: 1200
+        'Mashroom OpenID Connect Security Provider': {
+            "issuerDiscoveryUrl": `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/.well-known/uma2-configuration`,
+            "clientId": KEYCLOAK_CLIENT_ID,
+            "clientSecret": KEYCLOAK_CLIENT_SECRET,
+            "redirectUrl": `${PORTAL_URL}/openid-connect-cb`,
+            "rolesClaim": "roles",
+            "adminRoles": [
+                "mashroom-admin"
+            ]
         },
         'Mashroom Helmet Middleware': {
 
         },
         'Mashroom Storage Services': {
-            provider: 'Mashroom Storage Filestore Provider'
+            provider: 'Mashroom Storage MongoDB Provider'
         },
-        'Mashroom Storage Filestore Provider': {
-            dataFolder: DATA_FOLDER
+        'Mashroom Storage MongoDB Provider': {
+            "connectionUri": MONGODB_CONNECTION_URI
         },
         'Mashroom Internationalization Services': {
             availableLanguages: ['en', 'de'],

@@ -1,0 +1,17 @@
+
+keycloak:
+    replicas: 2
+
+    service:
+        type: NodePort
+
+    ingress:
+        enabled: false
+
+    persistence:
+        # The database vendor. Can be either "postgres", "mysql", "mariadb", or "h2"
+        dbVendor: mysql
+
+    extraEnv: |
+        - name: JDBC_PARAMS
+          value: useSSL=false

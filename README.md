@@ -28,17 +28,20 @@ Highlights:
 The outlined platform consists of:
 
  * A *Kubernetes* cluster
+ * A bunch of common services that can be used by the Portal and the Microfrontends
+     * [Keycloak](https://www.keycloak.org) Identity Provider for authentication and authorization
+     * [MySQL](https://www.mysql.com/)  database
+     * [Redis](https://redis.io) cluster for Portal session storage
+     * [RabbitMQ](https://www.rabbitmq.com) as message broker
+     * [MongoDB](https://www.mongodb.com) for the Portal configuration
  * A [Mashroom Portal](https://mashroom-server.com) for the Microfrontend integration with the following plugins:
-     * @mashroom/mashroom-storage-provider-filestore
-     * @mashroom/mashroom-security-provider-simple (simple JSON credential store)
+     * @mashroom/mashroom-storage-provider-mongodb
+     * @mashroom/mashroom-security-provider-openid-connect
      * @mashroom/mashroom-portal-remote-app-registry-k8s (Microfrontend discovery)
      * @mashroom/mashroom-session-provider-redis
      * @mashroom/mashroom-websocket
      * @mashroom/mashroom-messaging
      * @mashroom/mashroom-messaging-external-provider-amqp
- * A [Redis](https://redis.io/) cluster for Portal session storage
- * A [RabbitMQ](https://www.rabbitmq.com/) as message broker
- * A block storage (e.g. an external NFS store) for the Portal configuration
  * A bunch *Mashroom Portal* compliant of Microfrontends
 
 ## Setup Guides
@@ -46,20 +49,16 @@ The outlined platform consists of:
 > Note: The setup guides assume you're working in a shell. So all the manual steps and scripts work on
 > Linux and macOS, but they also should work with any BASH emulation on Windows.
 
- * [Manual Setup Guide](SETUP_MANUAL.md)
  * [Setup Guide for Google Cloud Platform](SETUP_GCP.md)
+ * [Manual Setup Guide](SETUP_MANUAL.md)
 
 ## Notes
 
- * Typically there would be an Identity Provider, either the existing one of your company or for example a [Keycloak](https://www.keycloak.org/)
-   as part of the platform. Either way, you need to write a security provider plugin to connect it to the *Mashroom Server*
-   (A OpenID Connect security provider is on the [Mashroom Roadmap](https://github.com/nonblocking/mashroom/blob/master/ROADMAP.md))
- * Instead of an external NFS store you might consider a cloud native store such as [Gluster](https://www.gluster.org/) or [StorageOS](https://storageos.com/).
-   You could also store the Portal configuration in a database like [mongoDB](https://www.mongodb.com/) but then you have to write a new
-   storage provider plugin (A mongoDB storage provider is also on the [Mashroom Roadmap](https://github.com/nonblocking/mashroom/blob/master/ROADMAP.md))
- * A CI/CD pipeline to deploy the Portal and the Microfrontends automatically after code changes.
-   You could deploy Jenkins on the cluster, install [Spinnaker](https://www.spinnaker.io/)
-   or use a Cloud service such as [Google Cloud Build](https://github.com/marketplace/google-cloud-build)
- * You should use namespaces to separate common stuff such as Redis from your Microfrontends
- * The Ingress should be used for SSL/TLS termination (and maybe name based virtual hosts)
-
+ * **NEVER** use OpenID Connect/OAuth2 without transport layer security in real live systems.
+   So, for a production ready setup enable HTTPS for both Portal and Keycloak.
+   For GKE follow [the Ingress guide](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress).
+ * You should use a CI/CD pipeline to deploy the Portal and the Microfrontends automatically after code changes.
+   One way would be to deploy Jenkins on the cluster or to install [Spinnaker](https://www.spinnaker.io/).
+   Alternatively use a Cloud service such as [Google Cloud Build](https://github.com/marketplace/google-cloud-build).
+ * You should use namespaces to separate common stuff services from your Microfrontends.
+ * Some of the resources (like MySQL) or not configured for high availability yet

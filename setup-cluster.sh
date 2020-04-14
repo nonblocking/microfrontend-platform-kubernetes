@@ -3,39 +3,48 @@
 source ./set-env.sh
 
 echo "Creating new cluster '${CLUSTER}'..."
-gcloud container clusters create "${CLUSTER}" --zone "${ZONE}"
+gcloud container clusters create "${CLUSTER}" --zone "${ZONE}" --num-nodes=4
 # Set auth on kubectl
 gcloud container clusters get-credentials "${CLUSTER}" --zone "${ZONE}"
+
+echo "Creating external IP addresses"
+gcloud compute addresses create keycloak-global-ip --global
+gcloud compute addresses create portal-global-ip --global
+export KEYCLOAK_IP=`gcloud compute addresses describe keycloak-global-ip --global --format='get(address)'`
+export PORTAL_IP=`gcloud compute addresses describe portal-global-ip --global --format='get(address)'`
 
 echo "Deploying Redis..."
 # Possible parameters: https://github.com/helm/charts/tree/master/stable/redis
 helm install redis \
   --set usePassword=false \
-    stable/redis
+    bitnami/redis
 
 echo "Deploying RabbitMQ with AMQP 1.0 plugin..."
-# Possible parameter: https://github.com/helm/charts/tree/master/stable/rabbitmq
+# Possible parameters: https://github.com/helm/charts/tree/master/stable/rabbitmq
 helm install rabbitmq-amqp10 \
-  --set rabbitmq.username=${RABBITMQ_USER},rabbitmq.password=${RABBITMQ_PASSWORD},rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
-  stable/rabbitmq
+  --set replicas=2,rabbitmq.username=${RABBITMQ_USER},rabbitmq.password=${RABBITMQ_PASSWORD},rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
+    bitnami/rabbitmq
 
-echo "Creating new Filestore '${FILESTORE_ID}'..."
-gcloud filestore instances create ${FILESTORE_ID} \
-    --project=${PROJECT_ID} \
-    --zone=${ZONE} \
-    --tier=STANDARD \
-    --file-share=name="${FILESTORE_SHARE_NAME}",capacity=1TB \
-    --network=name="default"
+echo "Deploying MongoDB"
+# Possible parameters: https://github.com/helm/charts/tree/master/stable/mongodb
+helm install mongodb \
+  --set replicaSet.enabled=true,mongodbDatabase=${MONGODB_DATABASE},mongodbUsername=${MONGODB_USER},mongodbPassword=${MONGODB_PASSWORD} \
+    bitnami/mongodb
 
+echo "Deploying MySQL"
+# Possible parameters: https://github.com/helm/charts/tree/master/stable/mongodb
+helm install mysql \
+  --set replicaSet.enabled=true,mysqlDatabase=${MYSQL_DATABASE},mysqlUser=${MYSQL_USER},mysqlPassword=${MYSQL_PASSWORD} \
+    stable/mysql
 
-# Sometimes it takes a few seconds until the IP address is available
-sleep 5
-
-FILESTORE_IP=`gcloud filestore instances describe ${FILESTORE_ID} \
-     --project=${PROJECT_ID} \
-     --zone=${ZONE} \
-     --format="value(networks.ipAddresses[0])"`
-echo "Filestore IP: ${FILESTORE_IP}"
+echo "Deploying Keycloak"
+# Possible parameters: https://github.com/codecentric/helm-charts/tree/master/charts/keycloak
+helm install keycloak \
+  -f keycloak/values.yaml \
+  --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
+keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
+  codecentric/keycloak
+kubectl apply -f ./keycloak/keycloak-ingress.yaml
 
 echo "Creating ConfigMap with platform services..."
 echo "apiVersion: v1
@@ -45,28 +54,15 @@ metadata:
   namespace: default
 data:
   REDIS_HOST: redis-master.default
-  REDIS_PORT: \"6379\"
+  REDIS_PORT: '6379'
   RABBITMQ_HOST: rabbitmq-amqp10.default
-  RABBITMQ_PORT: \"5672\"
-  RABBITMQ_USER: $RABBITMQ_USER" \
-  | kubectl apply -f -
-
-
-echo "Creating nfs Storage Class with ReadWriteMany capability..."
-echo "apiVersion: v1
-kind: PersistentVolume
-metadata:
-    name: nfs-filestore
-    namespace: default
-spec:
-    storageClassName: nfs
-    capacity:
-        storage: 1T
-    accessModes:
-        - ReadWriteMany
-    nfs:
-        path: /$FILESTORE_SHARE_NAME
-        server: $FILESTORE_IP"\
+  RABBITMQ_PORT: '5672'
+  RABBITMQ_USER: $RABBITMQ_USER
+  MONGODB_CONNECTION_URI: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb-primary-0.mongodb-headless.default:27017,mongodb-secondary-0.mongodb-headless.default:27017/${MONGODB_DATABASE}?replicaSet=rs0
+  KEYCLOAK_URL: http://${KEYCLOAK_IP}" \
   | kubectl apply -f -
 
 echo "Successfully setup cluster!"
+
+echo "Keycloak is available at http://${KEYCLOAK_IP}"
+echo "The Mashroom Portal will be available at http://${PORTAL_IP}"
