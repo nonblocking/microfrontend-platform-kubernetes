@@ -11,7 +11,10 @@ Create a [GCP](https://cloud.google.com/) account and:
 Then install locally:
 
  * [gcloud](https://cloud.google.com/sdk)
- * kubectl (gcloud components install kubectl)
+ * kubectl
+
+        gcloud components install kubectl
+
  * [docker](https://www.docker.com)
  * [helm](https://helm.sh/)
 
