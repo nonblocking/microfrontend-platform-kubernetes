@@ -50,7 +50,10 @@ The outlined platform consists of:
 > Linux and macOS, but they also should work with any BASH emulation on Windows.
 
  * [Setup Guide for Google Cloud Platform](SETUP_GCP.md)
- * [Manual Setup Guide](SETUP_MANUAL.md)
+ * [Manual Setup Guide for Kubernetes](SETUP_K8S_MANUAL.md)
+
+
+ * [Local Development Setup](SETUP_LOCAL_DEV.md)
 
 ## Notes
 
