@@ -194,3 +194,5 @@ as template and adapt it to your needs.
 
    After opening http://localhost:15672 and logging in you should be able to see the bindings on the *amqp.topic* exchange:
    ![The platform](./images/rabbitmq_bindings.png)
+ * The Prometheus metrics will be available on http://<ingress-ip>/metrics. If you open this URL you should see something like this:
+   ![Prometheus Metrics](./images/prometheus_metrics.png)

@@ -9,6 +9,7 @@
     "ignorePlugins": [
         "Mashroom OpenID Connect Security Provider",
         "Mashroom Storage MongoDB Provider",
+        "Mashroom Memory Cache Redis Provider",
         "Mashroom Session Redis Provider",
         "Mashroom Messaging External Provider AMQP",
         "Mashroom Portal Remote App Registry Kubernetes",
@@ -45,7 +46,10 @@
 
         },
         "Mashroom Storage Services": {
-            "provider": "Mashroom Storage Filestore Provider"
+            "provider": "Mashroom Storage Filestore Provider",
+            "memoryCache": {
+                "enabled": false
+            }
         },
         "Mashroom Storage Filestore Provider": {
             "dataFolder": "../../data/storage"

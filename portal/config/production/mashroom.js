@@ -51,7 +51,7 @@ module.exports = {
             redisOptions: {
                 host: REDIS_HOST,
                 port: REDIS_PORT,
-                keyPrefix: 'mashroom-portal:',
+                keyPrefix: 'mashroom:sess:',
             },
         },
         'Mashroom Security Services': {
@@ -73,10 +73,28 @@ module.exports = {
 
         },
         'Mashroom Storage Services': {
-            provider: 'Mashroom Storage MongoDB Provider'
+            provider: 'Mashroom Storage MongoDB Provider',
+            memoryCache: {
+                enabled: true,
+                ttlSec: 120,
+                invalidateOnUpdate: true,
+            }
         },
         'Mashroom Storage MongoDB Provider': {
-            "connectionUri": MONGODB_CONNECTION_URI
+            uri: MONGODB_CONNECTION_URI,
+            connectionOptions: {
+                poolSize: 5,
+            }
+        },
+        "Mashroom Memory Cache Services": {
+            provider: 'Mashroom Memory Cache Redis Provider',
+        },
+        "Mashroom Memory Cache Redis Provider": {
+            redisOptions: {
+                host: REDIS_HOST,
+                port: REDIS_PORT,
+                keyPrefix: 'mashroom:cache:',
+            },
         },
         'Mashroom Internationalization Services': {
             availableLanguages: ['en', 'de'],

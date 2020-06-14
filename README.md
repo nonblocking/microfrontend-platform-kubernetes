@@ -20,6 +20,7 @@ Highlights:
  * High Availability: All building blocks are stateless and can be scaled horizontally
  * Support for server side messaging: The Microfrontends can not only use the *MessageBus* to exchange messages on the same page
    but also with other users and 3rd party systems
+ * Extensive metrics exposed in Prometheus format
 
 ### Building blocks
 
@@ -36,12 +37,16 @@ The outlined platform consists of:
      * [MongoDB](https://www.mongodb.com) for the Portal configuration
  * A [Mashroom Portal](https://mashroom-server.com) for the Microfrontend integration with the following plugins:
      * @mashroom/mashroom-storage-provider-mongodb
+     * @mashroom/mashroom-memory-cache (Memory cache for the MongoDB storage)
+     * @mashroom/mashroom-memory-cache-provider-redis
      * @mashroom/mashroom-security-provider-openid-connect
      * @mashroom/mashroom-portal-remote-app-registry-k8s (Microfrontend discovery)
      * @mashroom/mashroom-session-provider-redis
      * @mashroom/mashroom-websocket
      * @mashroom/mashroom-messaging
      * @mashroom/mashroom-messaging-external-provider-amqp
+     * @mashroom/mashroom-monitoring-metrics-collector
+     * @mashroom/mashroom-monitoring-prometheus-exporter
  * A bunch *Mashroom Portal* compliant of Microfrontends
 
 ## Setup Guides
@@ -65,3 +70,5 @@ The outlined platform consists of:
    Alternatively use a Cloud service such as [Google Cloud Build](https://github.com/marketplace/google-cloud-build).
  * You should use namespaces to separate common stuff services from your Microfrontends.
  * Some of the resources (like MySQL) or not configured for high availability yet
+ * You should also deploy [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) for monitoring the Portal.
+   [Here](https://github.com/nonblocking/mashroom/blob/master/packages/plugin-packages/mashroom-monitoring-prometheus-exporter/test/grafana-test/grafana/provisioning/dashboards/Mashroom%20Dashboard.json) you can find an example Dashboard configuration.

@@ -56,11 +56,13 @@ shows Ready 1/1. Then execute:
 
     cd keycloak
     ./setup-mashroom-realm.sh
+    cd ..
 
 ## Deploy the Mashroom Portal
 
     cd portal
     npm run deploy
+    cd ..
 
 ## Deploy the Microfrontends
 
@@ -69,6 +71,7 @@ shows Ready 1/1. Then execute:
      cd ..
      cd microfrontend-demo2
      npm run deploy
+     cd ..
 
 ## Check if the platform is up and running
 
@@ -95,3 +98,5 @@ shows Ready 1/1. Then execute:
    ![The platform](./images/rabbitmq_bindings.png)
  * To add new users: Find the *keycloak-ingress* address and open it in a browser. Click on *Administration Console* and log
    in as admin/test (or whatever you've set as admin credentials in *set-env.sh*)
+ * The Prometheus metrics will be available on http://<ingress-ip>/metrics. If you open this URL you should see something like this:
+   ![Prometheus Metrics](./images/prometheus_metrics.png)
