@@ -104,7 +104,7 @@ module.exports = {
             rejectUntrustedCerts: false,
             poolMaxSockets: 10
         },
-        'Mashroom WebSocket Services': {
+        'Mashroom WebSocket Webapp': {
             restrictToRoles: null,
             enableKeepAlive: true,
             keepAliveIntervalSec: 15,
