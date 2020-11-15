@@ -8,7 +8,6 @@ import webpackConfig from '../../../webpack/webpack.dev';
 const bundler = webpack(webpackConfig);
 const devMiddleware = [
     webpackDevMiddleware(bundler, {
-        filename: webpackConfig.output.filename,
         publicPath: webpackConfig.output.publicPath,
     }),
     webpackHotMiddleware(bundler),

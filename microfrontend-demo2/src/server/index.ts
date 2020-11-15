@@ -26,5 +26,5 @@ app.use(express.static(path.resolve(__dirname, '../../dist/frontend')));
 app.use('/package.json', express.static(path.resolve(__dirname, '..', '..', 'package.json')));
 
 app.listen(PORT, () => {
-    pino.info('Server listening at port %s', PORT);
+    pino.info('App is running at http://localhost:%s', PORT);
 });

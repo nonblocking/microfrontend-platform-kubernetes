@@ -10,7 +10,7 @@ const bootstrap: MashroomPortalAppPluginBootstrapFunction = (
     portalAppSetup,
     clientServices,
 ) => {
-    const { restProxyPaths = {} } = portalAppSetup || {};
+    const { restProxyPaths } = portalAppSetup || {};
     const { restService } = clientServices;
     const restProxyPath = restProxyPaths.bff;
 
