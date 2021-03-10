@@ -20,7 +20,7 @@ Then install locally:
 
 And add at least the following Helm repos:
 
-    helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    helm repo add stable https://charts.helm.sh/stable
     helm repo add codecentric https://codecentric.github.io/helm-charts
     helm repo add bitnami https://charts.bitnami.com/bitnami
 

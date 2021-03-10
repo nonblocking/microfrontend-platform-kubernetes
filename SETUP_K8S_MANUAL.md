@@ -15,7 +15,7 @@ If you use the *Google Kubernetes Engine* use the [GCP Setup Guide](SETUP_GCP.md
 
 And add at least the following Helm repos:
 
-    helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    helm repo add stable https://charts.helm.sh/stable
     helm repo add codecentric https://codecentric.github.io/helm-charts
     helm repo add bitnami https://charts.bitnami.com/bitnami
 
@@ -33,18 +33,21 @@ In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used.
 ### RabbitMQ
 
     helm install rabbitmq-amqp10 \
+      --version "6.17.5" \
       --set replicas=2,rabbitmq.username=<username>,rabbitmq.password=<password>,rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
       bitnami/rabbitmq
 
 ### MongoDB
 
     helm install mongodb \
+      --version "7.8.8" \
       --set replicaSet.enabled=true,mongodbDatabase=<portal_db_name>,mongodbUsername=<portal_db_user>,mongodbPassword=<portal_db_password**> \
       bitnami/mongodb
 
 ### MySQL
 
     helm install mysql \
+      --version "1.6.9" \
       --set replicaSet.enabled=true,mysqlDatabase=<keycloak_db_name>,mysqlUser=<keycloak_db_user>,mysqlPassword=<keycloak_db_password> \
         stable/mysql
 
@@ -55,6 +58,7 @@ In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used.
 Adapt the *keycloak/value.yaml* for your needs.
 
     helm install keycloak \
+      --version "8.3.0" \
       -f keycloak/values.yaml \
       --set keycloak.persistence.dbName=<keycloak_db_name>,keycloak.persistence.dbUser=<keycloak_db_user>,keycloak.persistence.dbPassword=<keycloak_db_password>,\
     keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=<keycloak_admin_user>,keycloak.password=<keycloak_admin_password> \
