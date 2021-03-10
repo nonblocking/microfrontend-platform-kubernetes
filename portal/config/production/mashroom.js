@@ -56,8 +56,7 @@ module.exports = {
         },
         'Mashroom Security Services': {
             provider: 'Mashroom OpenID Connect Security Provider',
-            acl: './acl.json',
-            loginPage: '/login'
+            acl: './acl.json'
         },
         'Mashroom OpenID Connect Security Provider': {
             "issuerDiscoveryUrl": `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/.well-known/uma2-configuration`,
@@ -117,7 +116,7 @@ module.exports = {
             enableWebSockets: true,
             topicACL: './topic_acl.json'
         },
-        'Mashroom Portal Remote App Registry Kubernetes': {
+        'Mashroom Portal Remote App Kubernetes Background Job': {
             k8sNamespaces: ['default'],
             serviceNameFilter: 'microfrontend-.*'
         },

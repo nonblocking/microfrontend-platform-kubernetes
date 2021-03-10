@@ -35,12 +35,12 @@
         },
         "Mashroom Security Services": {
             "provider": "Mashroom Security Simple Provider",
-            "acl": "./acl.json",
-            "loginPage": "/login"
+            "acl": "./acl.json"
         },
         "Mashroom Security Simple Provider": {
             "users": "./users.json",
-            "authenticationTimeoutSec": 1200
+            "authenticationTimeoutSec": 1200,
+            "loginPage": "/login"
         },
         "Mashroom Helmet Middleware": {
 
