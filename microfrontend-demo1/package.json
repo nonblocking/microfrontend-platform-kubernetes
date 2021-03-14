@@ -66,7 +66,8 @@
     },
     "scripts": {
         "start": "node dist/server/index.js",
-        "dev": "cross-env NODE_ENV=development supervisor --watch src -- -r \"babel-register-ts\" src/server/index.ts",
+        "dev": "cross-env NODE_ENV=development supervisor --watch src -- -r \"babel-register-ts\" --inspect src/server/index.ts",
+        "dev:telepresence": "telepresence --swap-deployment microfrontend-demo1 --expose 6088 --run npm run dev",
         "build": "concurrently \"npm run type-check\" \"npm run lint\" \"npm run build:server\" \"npm run build:client\"",
         "build:server": "babel ./src/server -d dist/server --copy-files --extensions .ts",
         "build:client": "webpack --config webpack/webpack.prod.js",

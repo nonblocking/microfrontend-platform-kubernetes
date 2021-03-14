@@ -72,3 +72,5 @@ The outlined platform consists of:
  * Some of the resources (like MySQL) or not configured for high availability yet
  * You should also deploy [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) for monitoring the Portal.
    [Here](https://github.com/nonblocking/mashroom/blob/master/packages/plugin-packages/mashroom-monitoring-prometheus-exporter/test/grafana-test/grafana/provisioning/dashboards/Mashroom%20Dashboard.json) you can find an example Dashboard configuration.
+ * Checkout this article how to replace a Microfrontend on K8S with a local version with Telepresence:
+   https://medium.com/mashroom-server/debug-microfrontends-on-a-kubernetes-cluster-with-telepresence-d709333ee1b7
