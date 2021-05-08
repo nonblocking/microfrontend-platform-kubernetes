@@ -31,4 +31,4 @@ spec:
                             path: /api/ready
                             port: 6089
                         initialDelaySeconds: 2
-                        periodSeconds: 60
+                        periodSeconds: 5

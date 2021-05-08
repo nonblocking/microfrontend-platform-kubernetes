@@ -82,4 +82,4 @@ spec:
                             path: /mashroom/health/ready
                             port: 5050
                         initialDelaySeconds: 5
-                        periodSeconds: 60
+                        periodSeconds: 5
