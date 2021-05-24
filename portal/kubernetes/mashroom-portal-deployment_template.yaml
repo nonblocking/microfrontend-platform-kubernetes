@@ -23,6 +23,8 @@ spec:
                             value: production
                         -   name: SHOW_ENV_AND_VERSIONS
                             value: "true"
+                        -   name: WAIT_BEFORE_SERVER_CLOSE
+                            value: '10'
                         -   name: PORTAL_URL
                             value: ${PORTAL_URL}
                         -   name: KEYCLOAK_URL
