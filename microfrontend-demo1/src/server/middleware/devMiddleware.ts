@@ -5,7 +5,7 @@ import webpack from 'webpack';
 // @ts-ignore
 import webpackConfig from '../../../webpack/webpack.dev';
 
-const bundler = webpack(webpackConfig);
+const bundler: any = webpack(webpackConfig);
 const devMiddleware = [
     webpackDevMiddleware(bundler, {
         publicPath: webpackConfig.output.publicPath,

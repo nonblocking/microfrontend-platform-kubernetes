@@ -16,7 +16,7 @@ const {
 } = process.env;
 
 module.exports = {
-    name: 'Mashroom Portal Quickstart',
+    name: 'Microfrontend Platform Kubernetes',
     port: 5050,
     pluginPackageFolders: [
         {
@@ -26,8 +26,11 @@ module.exports = {
     ignorePlugins: [
         "Mashroom Security Simple Provider",
         "Mashroom Storage Filestore Provider",
+        "Mashroom Portal Remote App Background Job",
         "Mashroom Portal Remote App Registry",
-        "Mashroom Portal Remote App Registry Webapp"
+        "Mashroom Portal Remote App Endpoint Services",
+        "Mashroom Portal Remote App Registry Admin Webapp",
+        "Mashroom Portal Remote App Registry Admin Webapp Integration"
     ],
     indexPage: '/portal',
     plugins: {
@@ -100,7 +103,7 @@ module.exports = {
             defaultLanguage: 'en'
         },
         'Mashroom Http Proxy Services': {
-            rejectUntrustedCerts: false,
+            rejectUnauthorized: false,
             poolMaxSockets: 10
         },
         'Mashroom WebSocket Webapp': {
@@ -114,7 +117,7 @@ module.exports = {
             externalTopics: [],
             userPrivateBaseTopic: 'user',
             enableWebSockets: true,
-            topicACL: './topic_acl.json'
+            topicACL: './topicACL.json'
         },
         'Mashroom Portal Remote App Kubernetes Background Job': {
             k8sNamespaces: ['default'],

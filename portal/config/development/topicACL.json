@@ -1,0 +1,6 @@
+{
+    "$schema": "https://www.mashroom-server.com/schemas/mashroom-security-topic-acl.json",
+    "restricted/#": {
+        "allow": ["Administrator"]
+    }
+}

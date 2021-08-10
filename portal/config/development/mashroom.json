@@ -1,5 +1,6 @@
 {
-    "name": "Mashroom Portal Quickstart",
+    "$schema": "https://www.mashroom-server.com/schemas/mashroom-server-config.json",
+    "name": "Microfrontend Platform Kubernetes",
     "port": 5050,
     "pluginPackageFolders": [
         {
@@ -12,8 +13,10 @@
         "Mashroom Memory Cache Redis Provider",
         "Mashroom Session Redis Provider",
         "Mashroom Messaging External Provider AMQP",
-        "Mashroom Portal Remote App Registry Kubernetes",
-        "Mashroom Portal Remote App Registry Kubernetes Webapp"
+        "Mashroom Portal Remote App Kubernetes Background Job",
+        "Mashroom Portal Remote App Kubernetes Registry",
+        "Mashroom Portal Remote App Kubernetes Admin Webapp",
+        "Mashroom Portal Remote App Kubernetes Admin Webapp Integration"
     ],
     "indexPage": "/portal",
     "plugins": {
@@ -59,7 +62,7 @@
             "defaultLanguage": "en"
         },
         "Mashroom Http Proxy Services": {
-            "rejectUntrustedCerts": false,
+            "rejectUnauthorized": false,
             "poolMaxSockets": 10
         },
         "Mashroom WebSocket Webapp": {
@@ -72,7 +75,7 @@
             "externalTopics": [],
             "userPrivateBaseTopic": "user",
             "enableWebSockets": true,
-            "topicACL": "./topic_acl.json"
+            "topicACL": "./topicACL.json"
         }
     }
 }

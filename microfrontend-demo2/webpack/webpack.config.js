@@ -7,11 +7,10 @@ module.exports = {
         path: path.resolve(__dirname, '../dist/frontend'),
         publicPath: '/',
     },
-
+    target: ['web', 'es5'],
     resolve: {
         extensions: ['.js', '.ts', '.tsx'],
     },
-
     module: {
         rules: [
             {
@@ -38,7 +37,6 @@ module.exports = {
             },
         ]
     },
-
     plugins: [
         new HtmlWebpackPlugin({
             inject: 'head',

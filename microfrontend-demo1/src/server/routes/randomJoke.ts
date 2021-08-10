@@ -1,4 +1,3 @@
-// @flow
 
 import { Request, Response } from 'express';
 import { get } from "request";

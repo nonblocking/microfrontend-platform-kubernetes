@@ -1,9 +1,10 @@
 
 import React, { PureComponent } from 'react';
-import { AppStyle, ErrorStyle } from './App.scss';
 
-import { MashroomRestService } from '@mashroom/mashroom-portal/type-definitions';
-import {NextLaunch} from '../../type-definitions';
+import type {MashroomRestService} from '@mashroom/mashroom-portal/type-definitions';
+import type {NextLaunch} from '../../type-definitions';
+
+import style from './App.scss';
 
 type Props = {
     restProxyPath: string;
@@ -46,7 +47,7 @@ class App extends PureComponent<Props, State> {
     renderContent() {
         const { nextLaunch, error } = this.state;
         if (error) {
-            return <div className={ErrorStyle}>Error loading</div>
+            return <div className={style.Error}>Error loading</div>
         } else if (!nextLaunch) {
             return <div>Loading...</div>;
         }
@@ -84,7 +85,7 @@ class App extends PureComponent<Props, State> {
 
     render() {
         return (
-            <div className={AppStyle}>
+            <div className={style.App}>
                 {this.renderContent()}
             </div>
         );
