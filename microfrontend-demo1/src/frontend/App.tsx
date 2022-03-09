@@ -1,70 +1,62 @@
+import React, { PureComponent } from "react";
+import type { MashroomRestService } from "@mashroom/mashroom-portal/type-definitions/internal";
+import type { RandomJoke } from "../../type-definitions";
 
-import React, { PureComponent } from 'react';
-import type {MashroomRestService} from '@mashroom/mashroom-portal/type-definitions';
-import type {RandomJoke} from '../../type-definitions';
-
-import style from './App.scss';
+import style from "./App.scss";
+import fetchJoke from "./fetchJoke";
 
 type Props = {
     restProxyPath: string;
     restService: MashroomRestService;
-}
+};
 
-type State = {
-    joke: string | null;
-    error: boolean;
-}
+type State = { randomJoke?: RandomJoke; error: boolean };
 
 class App extends PureComponent<Props, State> {
-
     constructor(props: Props) {
         super(props);
         this.state = {
             error: false,
-            joke: null
-        }
+            randomJoke: undefined,
+        };
     }
 
     componentDidMount() {
-        const { restService, restProxyPath } = this.props;
+        const { restProxyPath } = this.props;
 
-        restService.withBasePath(restProxyPath).get('/randomJoke').then(
+        fetchJoke(restProxyPath).then(
             (randomJoke: RandomJoke) => {
-                this.setState({
-                    joke: randomJoke.joke,
-                });
+                this.setState({ ...{ randomJoke } });
             },
             (error) => {
                 console.error(error);
                 this.setState({
-                   error: true
+                    ...{
+                        error: true,
+                    },
                 });
-            }
-        )
+            },
+        );
     }
 
     renderContent() {
-        const { joke, error } = this.state;
+        const { randomJoke, error } = this.state;
         if (error) {
-            return <div className={style.Error}>Error loading</div>
-        } else if (!joke) {
+            return <div className={style.Error}>Error loading</div>;
+        } else if (!randomJoke) {
             return <div>Loading...</div>;
         }
 
         return (
             <div>
                 <h4>Random Chuck Norris Joke</h4>
-                <div dangerouslySetInnerHTML={{ __html: joke }}/>
+                <div dangerouslySetInnerHTML={{ __html: randomJoke.joke }} />
             </div>
         );
     }
 
     render() {
-        return (
-            <div className={style.App}>
-                {this.renderContent()}
-            </div>
-        );
+        return <div className={style.App}>{this.renderContent()}</div>;
     }
 }
 

@@ -1,53 +1,48 @@
+import React, { PureComponent } from "react";
 
-import React, { PureComponent } from 'react';
+import type { MashroomRestService } from "@mashroom/mashroom-portal/type-definitions/internal";
+import type { NextLaunch } from "../../type-definitions";
 
-import type {MashroomRestService} from '@mashroom/mashroom-portal/type-definitions';
-import type {NextLaunch} from '../../type-definitions';
-
-import style from './App.scss';
+import style from "./App.scss";
+import fetchNextLaunch from "./fetchNextLaunch";
 
 type Props = {
     restProxyPath: string;
     restService: MashroomRestService;
-}
+};
 
-type State = {
-    nextLaunch: NextLaunch | null;
-    error: boolean;
-}
+type State = { nextLaunch?: NextLaunch; error: boolean };
 
 class App extends PureComponent<Props, State> {
-
     constructor(props: Props) {
         super(props);
         this.state = {
             error: false,
-            nextLaunch: null
-        }
+            nextLaunch: undefined,
+        };
     }
 
     componentDidMount() {
-        const { restService, restProxyPath } = this.props;
-
-        restService.withBasePath(restProxyPath).get('/nextLaunch').then(
+        const { restProxyPath } = this.props;
+        fetchNextLaunch(restProxyPath).then(
             (nextLaunch: NextLaunch) => {
-                this.setState({
-                    nextLaunch,
-                });
+                this.setState({ ...{ nextLaunch } });
             },
             (error) => {
                 console.error(error);
                 this.setState({
-                   error: true
+                    ...{
+                        error: true,
+                    },
                 });
-            }
-        )
+            },
+        );
     }
 
     renderContent() {
         const { nextLaunch, error } = this.state;
         if (error) {
-            return <div className={style.Error}>Error loading</div>
+            return <div className={style.Error}>Error loading</div>;
         } else if (!nextLaunch) {
             return <div>Loading...</div>;
         }
@@ -67,7 +62,11 @@ class App extends PureComponent<Props, State> {
                         </tr>
                         <tr>
                             <th>Launch Date</th>
-                            <td>{new Date(nextLaunch.launchDate * 1000).toLocaleString()}</td>
+                            <td>
+                                {new Date(
+                                    nextLaunch.launchDate * 1000,
+                                ).toLocaleString()}
+                            </td>
                         </tr>
                         <tr>
                             <th>Rocket Name</th>
@@ -84,11 +83,7 @@ class App extends PureComponent<Props, State> {
     }
 
     render() {
-        return (
-            <div className={style.App}>
-                {this.renderContent()}
-            </div>
-        );
+        return <div className={style.App}>{this.renderContent()}</div>;
     }
 }
 
