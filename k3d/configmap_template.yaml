@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: platform-services
+    namespace: default
+data:
+    REDIS_HOST: redis-master.default
+    REDIS_PORT: "6379"
+    RABBITMQ_HOST: rabbitmq-amqp10.default
+    RABBITMQ_PORT: "5672"
+    RABBITMQ_USER: ${RABBITMQ_USER}
+    MONGODB_CONNECTION_URI: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb-primary-0.mongodb-headless.default:27017,mongodb-secondary-0.mongodb-headless.default:27017/${MONGODB_DATABASE}?replicaSet=rs0
+    KEYCLOAK_URL: http://keycloak-http:${NODE_PORT_KEYCLOAK}

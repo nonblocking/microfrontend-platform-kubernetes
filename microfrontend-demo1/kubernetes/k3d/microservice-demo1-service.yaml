@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: microfrontend-demo1
+    namespace: default
+    labels:
+        app: microfrontend-demo1
+spec:
+    type: ClusterIP
+    ports:
+        -  port: 6088
+           targetPort: 6088
+    selector:
+        app: microfrontend-demo1

@@ -2,17 +2,6 @@
 
 source ./set-env.sh
 
-echo "Creating new cluster '${CLUSTER}'..."
-gcloud container clusters create "${CLUSTER}" --zone "${ZONE}" --num-nodes=4
-# Set auth on kubectl
-gcloud container clusters get-credentials "${CLUSTER}" --zone "${ZONE}"
-
-echo "Creating external IP addresses"
-gcloud compute addresses create keycloak-global-ip --global
-gcloud compute addresses create portal-global-ip --global
-export KEYCLOAK_IP=`gcloud compute addresses describe keycloak-global-ip --global --format='get(address)'`
-export PORTAL_IP=`gcloud compute addresses describe portal-global-ip --global --format='get(address)'`
-
 echo "Deploying Redis..."
 # Possible parameters: https://github.com/helm/charts/tree/master/stable/redis
 helm install redis \
@@ -42,14 +31,15 @@ helm install mysql \
     stable/mysql
 
 echo "Deploying Keycloak"
+envsub ../keycloak/k3d/values_template.yaml ../keycloak/k3d/values.yaml
+
 # Possible parameters: https://github.com/codecentric/helm-charts/tree/master/charts/keycloak
 helm install keycloak \
   --version "8.3.0" \
-  -f keycloak/values.yaml \
+  -f ../keycloak/k3d/values.yaml \
   --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
 keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
   codecentric/keycloak
-kubectl apply -f ./keycloak/keycloak-ingress.yaml
 
 echo "Creating ConfigMap with platform services..."
 echo "apiVersion: v1

@@ -9,7 +9,7 @@
 export PROJECT_ID=mashroom-demo
 export ZONE=europe-west4-a
 
-export CLUSTER=microfrontend-platform
+export CLUSTER=mashroom-cluster
 
 export MONGODB_DATABASE=mashroom
 export MONGODB_USER=mashroom
@@ -27,4 +27,15 @@ export KEYCLOAK_CLIENT_SECRET="copy from keycloak after setup"
 
 export RABBITMQ_USER=rabbitmq
 export RABBITMQ_PASSWORD=BJ-63VLqCT
+
+# K3D related variables
+export LOCAL_REGISTRY_NAME=mashroomregistry.localhost
+export LOCAL_REGISTRY_PORT=12345
+export NODE_PORT_RANGE_FROM=30000
+export NODE_PORT_RANGE_TO=30100
+export NUM_AGENTS=0
+export CLUSTER_IP=localhost
+export NODE_PORT_KEYCLOAK=30081
+export NODE_PORT_PORTAL=30082
+
 

@@ -55,6 +55,7 @@ The outlined platform consists of:
 > Linux and macOS, but they also should work with any BASH emulation on Windows.
 
  * [Setup Guide for Google Cloud Platform](SETUP_GCP.md)
+ * [K3d Setup Guide for Kubernetes](SETUP_K8S_K3D.md)
  * [Manual Setup Guide for Kubernetes](SETUP_K8S_MANUAL.md)
 
 

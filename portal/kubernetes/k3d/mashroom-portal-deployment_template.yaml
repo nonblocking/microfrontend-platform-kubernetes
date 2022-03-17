@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mashroom-portal
+    namespace: default
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: mashroom-portal
+    template:
+        metadata:
+            labels:
+                app: mashroom-portal
+        spec:
+            serviceAccountName: mashroom-portal
+            containers:
+                -   name: mashroom-portal
+                    image: k3d-${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}/mashroom-portal:latest
+                    imagePullPolicy: Always
+                    env:
+                        -   name: NODE_ENV
+                            value: production
+                        -   name: SHOW_ENV_AND_VERSIONS
+                            value: "true"
+                        -   name: WAIT_BEFORE_SERVER_CLOSE
+                            value: '10'
+                        -   name: PORTAL_URL
+                            value: http://${CLUSTER_IP}:${NODE_PORT_PORTAL}
+                        -   name: KEYCLOAK_URL
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: KEYCLOAK_URL
+                        -   name: KEYCLOAK_REALM
+                            value: ${KEYCLOAK_REALM}
+                        -   name: KEYCLOAK_CLIENT_ID
+                            value: ${KEYCLOAK_CLIENT_ID}
+                        -   name: KEYCLOAK_CLIENT_SECRET
+                            value: ${KEYCLOAK_CLIENT_SECRET}
+                        -   name: MONGODB_CONNECTION_URI
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: MONGODB_CONNECTION_URI
+                        -   name: REDIS_HOST
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: REDIS_HOST
+                        -   name: REDIS_PORT
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: REDIS_PORT
+                        -   name: RABBITMQ_HOST
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: RABBITMQ_HOST
+                        -   name: RABBITMQ_PORT
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: RABBITMQ_PORT
+                        -   name: RABBITMQ_USER
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: platform-services
+                                    key: RABBITMQ_USER
+                        -   name: RABBITMQ_PASSWORD
+                            valueFrom:
+                                secretKeyRef:
+                                    name: rabbitmq-amqp10
+                                    key: rabbitmq-password
+                    resources:
+                        requests:
+                            cpu: 100m
+                            memory: 120Mi
+                    ports:
+                        -   containerPort: 5050
+                    readinessProbe:
+                        httpGet:
+                            path: /mashroom/health/ready
+                            port: 5050
+                        initialDelaySeconds: 5
+                        periodSeconds: 5

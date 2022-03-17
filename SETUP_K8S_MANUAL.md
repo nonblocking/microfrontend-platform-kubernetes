@@ -28,7 +28,7 @@ In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used.
 
 ### Redis
 
-    helm install redis --set usePassword=false bitnami/redis
+    helm install redis --set auth.enabled=false bitnami/redis
 
 ### RabbitMQ
 
@@ -175,8 +175,8 @@ To deploy microfrontend-demo1 (microfrontend-demo2) can be deployed similar:
 
 You can use
 
- * portal/microfrontend-demo1/microservice-demo1-deployment_template.yaml
- * portal/microfrontend-demo1/microservice-demo1-service.yaml
+ * microfrontend-demo1/microservice-demo1-deployment_template.yaml
+ * microfrontend-demo1/microservice-demo1-service.yaml
 
 as template and adapt it to your needs.
 
