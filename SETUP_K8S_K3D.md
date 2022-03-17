@@ -1,4 +1,4 @@
-# Manual Setup Guide
+# Setup on K3D
 
 This describes how to setup such a platform with [k3d](https://k3d.io) for local testing and development.
 
