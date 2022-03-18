@@ -24,5 +24,3 @@ else
         echo "Failed to Add $HOSTNAME, Try again!";
     fi
 fi
-
-127.0.0.1 keycloak-http

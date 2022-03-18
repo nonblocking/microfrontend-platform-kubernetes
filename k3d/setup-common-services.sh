@@ -1,6 +1,10 @@
 #!/bin/bash
 
+
+DIRECTORY=$(cd `dirname $0` && pwd)
+
 source ./set-env.sh
+
 
 echo "Deploying Redis..."
 # Possible parameters: https://github.com/helm/charts/tree/master/stable/redis
@@ -31,12 +35,12 @@ helm install mysql \
     stable/mysql
 
 echo "Deploying Keycloak"
-envsub ../keycloak/k3d/values_template.yaml ../keycloak/k3d/values.yaml
+envsub ${DIRECTORY}/../keycloak/k3d/values_template.yaml ${DIRECTORY}/../keycloak/k3d/values.yaml
 
 # Possible parameters: https://github.com/codecentric/helm-charts/tree/master/charts/keycloak
 helm install keycloak \
   --version "8.3.0" \
-  -f ../keycloak/k3d/values.yaml \
+  -f ${DIRECTORY}/../keycloak/k3d/values.yaml \
   --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
 keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
   codecentric/keycloak
