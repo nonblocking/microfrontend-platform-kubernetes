@@ -43,25 +43,8 @@ helm install keycloak \
   -f ${DIRECTORY}/../keycloak/k3d/values.yaml \
   --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
 keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
-  codecentric/keycloak
-
-echo "Creating ConfigMap with platform services..."
-echo "apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: platform-services
-  namespace: default
-data:
-  REDIS_HOST: redis-master.default
-  REDIS_PORT: '6379'
-  RABBITMQ_HOST: rabbitmq-amqp10.default
-  RABBITMQ_PORT: '5672'
-  RABBITMQ_USER: $RABBITMQ_USER
-  MONGODB_CONNECTION_URI: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb-primary-0.mongodb-headless.default:27017,mongodb-secondary-0.mongodb-headless.default:27017/${MONGODB_DATABASE}?replicaSet=rs0
-  KEYCLOAK_URL: http://${KEYCLOAK_IP}" \
-  | kubectl apply -f -
+  codecentric/Keycloak
 
 echo "Successfully setup cluster!"
 
-echo "Keycloak is available at http://${KEYCLOAK_IP}"
-echo "The Mashroom Portal will be available at http://${PORTAL_IP}"
+echo "Keycloak is available at http://keycloak-http:${NODE_PORT_KEYCLOAK}}"

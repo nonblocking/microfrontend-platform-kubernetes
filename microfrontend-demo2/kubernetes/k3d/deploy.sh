@@ -1,12 +1,14 @@
 #!/bin/bash
 
-source ../../../k3d/set-env.sh
+DIRECTORY=$(cd `dirname $0` && pwd)
+
+source $DIRECTORY/../../../k3d/set-env.sh
 
 echo "Deploying Microservice Demo2 on Kubernetes cluster ${CLUSTER}"
 
-envsub microservice-demo2-deployment_template.yaml microservice-demo2-deployment.yaml
+envsub $DIRECTORY/microservice-demo2-deployment_template.yaml $DIRECTORY/microservice-demo2-deployment.yaml
 
-kubectl apply -f ./microservice-demo2-deployment.yaml
-kubectl apply -f ./microservice-demo2-service.yaml
+kubectl apply -f $DIRECTORY/microservice-demo2-deployment.yaml
+kubectl apply -f $DIRECTORY/microservice-demo2-service.yaml
 
 echo "Deployment finished"

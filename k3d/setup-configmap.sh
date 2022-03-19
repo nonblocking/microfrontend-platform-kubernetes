@@ -2,8 +2,10 @@
 
 source ./set-env.sh
 
+DIRECTORY=$(cd `dirname $0` && pwd)
+
 echo "Creating configmap..."
 
-envsub configmap_template.yaml configmap.yaml
-kubectl apply -f ./configmap.yaml
+envsub ${DIRECTORY}/configmap_template.yaml ${DIRECTORY}/configmap.yaml
+kubectl apply -f ${DIRECTORY}/configmap.yaml
 

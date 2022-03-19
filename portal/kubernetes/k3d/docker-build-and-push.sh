@@ -1,6 +1,11 @@
 #!/bin/bash
 
-source ./set-env.sh
+DIRECTORY=$(cd `dirname $0` && pwd)
+
+source $DIRECTORY/../../../k3d/set-env.sh
+
+DIRECTORY=$(dirname "$DIRECTORY")
+DIRECTORY=$(dirname "$DIRECTORY")
 
 echo "Building a docker image or the portal and pushing it to your registry"
 

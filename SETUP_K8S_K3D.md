@@ -14,24 +14,27 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
 -   [k3d](https://k3d.io)
 -   [kubectl](https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
 -   [helm](https://helm.sh/)
+-   [envsub](https://github.com/danday74/envsub)
 
 ## Quickstart (only for mac and linux)
 
 -   [Setup helm](#setup-helm): `./k3d/setup-helm.sh`
--   [Create a local registry](#create-a-local-registry): `sudo ./k3d/setup-registry.sh`
--   [Forward keycloak-http to localhost](#forward-keycloak-http-to-localhost): `sudo ./k3d/setup-keycloak-localhost-forward`
+-   [Create a local registry](#create-a-local-registry): `source ./k3d/set-env.sh && sudo --preserve-env ./k3d/setup-registry.sh`
+-   [Forward keycloak-http to localhost](#forward-keycloak-http-to-localhost): `source ./k3d/set-env.sh && sudo ./k3d/setup-keycloak-localhost-forward.sh`
 -   [Create a k3d cluster](#create-a-k3d-cluster): `./k3d/setup-k3d-cluster.sh`
 -   [Setup common services](#setup-common-services): `./k3d/setup-common-services.sh`
--   Wait until all general services are running: `kubectl get pods`
+-   Wait until all common services are running: `kubectl get pods`
+-   Setup keycloak: Go to [Setup a keycloak realm](#setup-a-keycloak-realm)
+-   Do not forget to copy the client secret to `./k3d/set-env.sh`
+-   `source ./k3d/set-env.sh`
 -   [Create a ConfigMap for the common services](#create-a-configmap-for-the-common-services): `./k3d/setup-configmap.sh`
 -   [Create a service account](#create-a-service-account): `./k3d/setup-portal-service-account.sh`
 -   [Create portal docker image](#create-portal-docker-image): `./portal/kubernetes/k3d/docker-build-and-push.sh`
 -   [Deploy portal on Kubernetes](#deploy-portalon-kubernetes): `./portal/kubernetes/k3d/deploy.sh`
--   [Create docker image of microfrontend-demo1](#create-microfontends-docker-images): `./microfrontend-demo1/kubernetes/k3d/docker-build-and-push.sh`
+-   [Create docker image of microfrontend-demo1](#create-microfontends-docker-images): `./microfrontend-demo1/kubernetes/k3d/docker-build-and-push-portal.sh`
 -   [Deploy microfrontend-demo1](#deploy-microfrontends-on-kubernetes): `./microfrontend-demo1/kubernetes/k3d/deploy.sh`
 -   [Create docker image of microfrontend-demo2](#create-microfontends-docker-images): `./microfrontend-demo2/kubernetes/k3d/docker-build-and-push.sh`
 -   [Deploy microfrontend-demo2](#deploy-microfrontends-on-kubernetes): `./microfrontend-demo2/kubernetes/k3d/deploy.sh`
--   Setup keycloak: Go to [Setup a keycloak realm](#setup-a-keycloak-realm)
 -   Enjoy your [portal](http://localhost:30082)
 -   [Cleanup](#cleanup)
 -   [Troubleshooting](#troubleshooting)
@@ -339,3 +342,8 @@ _Or manually adapt the template with the necessry envs and apply them_
     If you changed somthing in your yaml file, do not forget to apply it first:
 
     kubectl apply -f <pathToYourFile>.yaml
+
+### Scripts cannot be executed
+
+    You might forgot to give your script the permission to run
+    chmod a+x <path to sciript>
