@@ -1,4 +1,5 @@
 {
+    "$schema": "./node_modules/@mashroom/mashroom-json-schemas/schemas/mashroom-packagejson-extension.json",
     "name": "microfrontend-demo2",
     "description": "Microfrontend Demo 2 - shows the next SpaceX rocket launch",
     "version": "1.0.0",
@@ -17,6 +18,7 @@
     "devDependencies": {
         "@mashroom/mashroom": "2.0.0-alpha.3",
         "@mashroom/mashroom-portal": "2.0.0-alpha.3",
+        "@mashroom/mashroom-json-schemas": "2.0.0-alpha.3",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "@babel/cli": "^7.14.8",
@@ -82,17 +84,22 @@
         "plugins": [
             {
                 "name": "Microfrontend Demo2",
-                "type": "portal-app",
-                "category": "Demo",
-                "bootstrap": "startupMicrofrontendDemo2",
+                "type": "portal-app2",
+                "clientBootstrap": "startupMicrofrontendDemo2",
                 "resources": {
                     "js": [
                         "bundle.js"
                     ]
                 },
+                "local": {
+                    "resourcesRoot": "./dist/frontend"
+                },
+                "remote": {
+                    "resourcesRoot": "/public"
+                },
                 "defaultConfig": {
-                    "resourcesRoot": "./dist/frontend",
-                    "restProxies": {
+                    "category": "Demo",
+                    "proxies": {
                         "bff": {
                             "targetUri": "http://localhost:6089/api"
                         }

@@ -20,11 +20,11 @@ api.get('/randomJoke', randomJoke);
 api.get('/ready', ready);
 app.use('/api', api);
 
-app.use(express.static(path.resolve(__dirname, '../../dist/frontend')));
+app.use('/public', express.static(path.resolve(__dirname, '../../dist/frontend')));
 
 // Expose package.json for Mashroom Portal
 app.use('/package.json', express.static(path.resolve(__dirname, '..', '..', 'package.json')));
 
 app.listen(PORT, () => {
-    pino.info('App is running at http://localhost:%s', PORT);
+    pino.info('App is running at http://localhost:%s/public', PORT);
 });

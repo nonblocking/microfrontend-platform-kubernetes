@@ -53,7 +53,8 @@
         "@mashroom/mashroom-memory-cache": "2.0.0-alpha.3",
         "@mashroom/mashroom-memory-cache-provider-redis": "2.0.0-alpha.3",
         "@mashroom/mashroom-monitoring-metrics-collector": "2.0.0-alpha.3",
-        "@mashroom/mashroom-monitoring-prometheus-exporter": "2.0.0-alpha.3"
+        "@mashroom/mashroom-monitoring-prometheus-exporter": "2.0.0-alpha.3",
+        "@mashroom/mashroom-json-schemas": "2.0.0-alpha.3"
     },
     "devDependencies": {
         "cross-var": "^1.1.0",

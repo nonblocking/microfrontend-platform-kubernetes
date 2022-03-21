@@ -5,7 +5,7 @@ module.exports = {
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, '../dist/frontend'),
-        publicPath: '/',
+        publicPath: '/public',
     },
     target: ['web', 'es5'],
     resolve: {

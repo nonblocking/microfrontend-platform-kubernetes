@@ -1,5 +1,5 @@
 {
-    "$schema": "https://www.mashroom-server.com/schemas/mashroom-security-topic-acl.json",
+    "$schema": "../../node_modules/@mashroom/mashroom-json-schemas/schemas/mashroom-security-topic-acl.json",
     "restricted/#": {
         "allow": ["Administrator"]
     }

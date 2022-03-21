@@ -85,7 +85,7 @@ module.exports = {
         'Mashroom Storage MongoDB Provider': {
             uri: MONGODB_CONNECTION_URI,
             connectionOptions: {
-                poolSize: 5,
+                minPoolSize: 5,
             }
         },
         "Mashroom Memory Cache Services": {

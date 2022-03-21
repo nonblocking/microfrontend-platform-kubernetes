@@ -1,5 +1,5 @@
 {
-    "$schema": "https://www.mashroom-server.com/schemas/mashroom-server-config.json",
+    "$schema": "../../node_modules/@mashroom/mashroom-json-schemas/schemas/mashroom-server-config.json",
     "name": "Microfrontend Platform Kubernetes",
     "port": 5050,
     "pluginPackageFolders": [
