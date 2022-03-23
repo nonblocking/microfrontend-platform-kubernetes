@@ -5,10 +5,6 @@
 # to your needs                                   #
 ###################################################
 
-# At least change the following to properties!
-export PROJECT_ID=mashroom-demo
-export ZONE=europe-west4-a
-
 export CLUSTER=mashroom-cluster
 
 export MONGODB_DATABASE=mashroom
@@ -37,5 +33,3 @@ export NUM_AGENTS=1
 export CLUSTER_IP=localhost
 export NODE_PORT_KEYCLOAK=30081
 export NODE_PORT_PORTAL=30082
-
-

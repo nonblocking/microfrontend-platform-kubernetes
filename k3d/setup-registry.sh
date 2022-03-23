@@ -2,7 +2,6 @@
 
 source ./set-env.sh
 
-
 echo "Creating registry ${LOCAL_REGISTRY_NAME}..."
 
 k3d registry create ${LOCAL_REGISTRY_NAME} --port ${LOCAL_REGISTRY_PORT}
