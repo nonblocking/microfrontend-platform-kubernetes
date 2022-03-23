@@ -19,8 +19,8 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
 ## Quickstart (only for mac and linux)
 
 -   [Setup helm](#setup-helm): `./k3d/setup-helm.sh`
--   [Create a local registry](#create-a-local-registry): `source ./k3d/set-env.sh && sudo --preserve-env ./k3d/setup-registry.sh`
--   [Forward keycloak-http to localhost](#forward-keycloak-http-to-localhost): `source ./k3d/set-env.sh && sudo ./k3d/setup-keycloak-localhost-forward.sh`
+-   [Create a local registry](#create-a-local-registry): `sudo --preserve-env ./k3d/setup-registry.sh`
+-   [Forward keycloak-http to localhost](#forward-keycloak-http-to-localhost): `sudo ./k3d/setup-keycloak-localhost-forward.sh`
 -   [Create a k3d cluster](#create-a-k3d-cluster): `./k3d/setup-k3d-cluster.sh`
 -   [Setup common services](#setup-common-services): `./k3d/setup-common-services.sh`
 -   Wait until all common services are running: `kubectl get pods`
