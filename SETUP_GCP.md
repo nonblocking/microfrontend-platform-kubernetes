@@ -44,7 +44,7 @@ At very least you should set:
 
 ## Setup the cluster and common services
 
-    ./setup-cluster.sh
+    ./setup-gcp-cluster.sh
 
 ## Setup Keycloak Realm
 
