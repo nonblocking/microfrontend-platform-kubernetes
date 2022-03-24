@@ -21,7 +21,7 @@ else
 
     if [ -n "$(grep $HOSTNAME /etc/hosts)" ]
     then
-        echo "$HOSTNAME was added succesfully \n $(grep $HOSTNAME /etc/hosts)";
+        echo "$HOSTNAME was added successfully \n $(grep $HOSTNAME /etc/hosts)";
     else
         echo "Failed to Add $HOSTNAME, Try again!";
     fi
