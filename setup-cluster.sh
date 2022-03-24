@@ -17,7 +17,7 @@ echo "Deploying Redis..."
 # Possible parameters: https://github.com/helm/charts/tree/master/stable/redis
 helm install redis \
   --version "12.8.3" \
-  --set auth.enabled=false \
+  --set usePassword=false \
     bitnami/redis
 
 echo "Deploying RabbitMQ with AMQP 1.0 plugin..."

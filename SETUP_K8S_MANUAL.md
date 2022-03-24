@@ -28,7 +28,7 @@ In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used.
 
 ### Redis
 
-    helm install redis --set auth.enabled=false bitnami/redis
+    helm install redis --set usePassword=false bitnami/redis
 
 ### RabbitMQ
 

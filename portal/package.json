@@ -30,6 +30,7 @@
         "@mashroom/mashroom-portal-demo-angular-app": "2.0.0-alpha.3",
         "@mashroom/mashroom-portal-demo-load-dynamically-app": "2.0.0-alpha.3",
         "@mashroom/mashroom-portal-demo-react-app": "2.0.0-alpha.3",
+        "@mashroom/mashroom-portal-demo-react-app2": "2.0.0-alpha.3",
         "@mashroom/mashroom-portal-demo-rest-proxy-app": "2.0.0-alpha.3",
         "@mashroom/mashroom-portal-demo-vue-app": "2.0.0-alpha.3",
         "@mashroom/mashroom-portal-demo-svelte-app": "2.0.0-alpha.3",
