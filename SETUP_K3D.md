@@ -133,10 +133,12 @@ Go to http://localhost:30081/
   called `mashroom-portal`
 - In the _Settings_ tab enter http://localhost:30082/* as valid redirect URL
 - In the _Settings_ tab set Access Type _confidential_
-- In the _Credentials_ tab you'll find the client secret -> **copy it to `./k3d/set-env.sh` or export/set an env
-  variable called _KEYCLOAK_CLIENT_SECRET_**
+- Save
 - To map the roles to a scope/claim goto _Mappers_, click _Add Builtin_ and add a _realm roles_ mapper. In the field _
   Token Claim Name_ enter _roles_. Also check _Add to ID token_.
+- Save
+- In the _Credentials_ tab you'll find the client secret -> **copy it to `./k3d/set-env.sh` or export/set an env
+  variable called _KEYCLOAK_CLIENT_SECRET_**
 - Add a role _mashroom-admin_
 - Go to [users](http://localhost:30081/auth/admin/master/console/#/realms/Mashroom/users) and add an admin user. Under _
   credentials_ set a default password. Under _role mappings_ add the role _mashroom-admin_ to this user
