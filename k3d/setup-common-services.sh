@@ -2,6 +2,8 @@
 
 DIRECTORY=$(cd `dirname $0` && pwd)
 
+source $DIRECTORY/set-env.s
+
 source ./set-env.sh
 
 echo "Deploying Redis..."

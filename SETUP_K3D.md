@@ -8,6 +8,8 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
 
 ## Requirements
 
+- Current user has access to docker.sock (sudo setfacl --modify user:<user name or ID>:rw /var/run/docker.sock)
+
 ### Installed
 
 - [docker](https://www.docker.com)
@@ -32,7 +34,7 @@ _Or_
 
 ### Create a local registry
 
-    ./k3d/setup-registry.sh
+    sudo ./k3d/setup-registry.sh
 
 _Or_
 
@@ -43,7 +45,7 @@ _Or_
 
 This step is necessary to avoid having trouble accessing keycloak from within the cluster.
 
-    ./k3d/setup-keycloak-localhost-forward.sh
+    sudo ./k3d/setup-keycloak-localhost-forward.sh
 
 _Or_
 
@@ -134,8 +136,7 @@ Go to http://localhost:30081/
 - In the _Settings_ tab enter http://localhost:30082/* as valid redirect URL
 - In the _Settings_ tab set Access Type _confidential_
 - Save
-- To map the roles to a scope/claim goto _Mappers_, click _Add Builtin_ and add a _realm roles_ mapper. In the field _
-  Token Claim Name_ enter _roles_. Also check _Add to ID token_.
+- To map the roles to a scope/claim goto _Mappers_, click _Add Builtin_ and add a _realm roles_ mapper. In the field _Token Claim Name_ enter _roles_. Also check _Add to ID token_.
 - Save
 - In the _Credentials_ tab you'll find the client secret -> **copy it to `./k3d/set-env.sh` or export/set an env
   variable called _KEYCLOAK_CLIENT_SECRET_**

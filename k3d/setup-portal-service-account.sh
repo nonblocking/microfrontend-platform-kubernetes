@@ -1,8 +1,9 @@
 #!/bin/bash
 
-source ./set-env.sh
-
 DIRECTORY=$(cd `dirname $0` && pwd)
+
+source $DIRECTORY/set-env.sh
+
 
 echo "Setting up portal service account..."
 
