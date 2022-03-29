@@ -14,14 +14,14 @@ HOSTNAME="$KEYCLOAK_HTTP"
 HOSTS_LINE="$IP\t$HOSTNAME"
 if [ -n "$(grep $HOSTNAME /etc/hosts)" ]
 then
-    echo "$HOSTNAME already exists : $(grep $HOSTNAME $ETC_HOSTS)"
+    echo "Entry with $HOSTNAME already exists"
 else
-    echo "Adding $HOSTNAME to your $ETC_HOSTS";
+    echo "Trying to add $HOSTNAME to your /etc/hosts";
     sudo -- sh -c -e "echo '$HOSTS_LINE' >> /etc/hosts";
 
     if [ -n "$(grep $HOSTNAME /etc/hosts)" ]
     then
-        echo "$HOSTNAME was added succesfully \n $(grep $HOSTNAME /etc/hosts)";
+        echo "$HOSTNAME was added succesfully to /etc/hosts)";
     else
         echo "Failed to Add $HOSTNAME, Try again!";
     fi
