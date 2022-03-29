@@ -64,7 +64,4 @@ $DIRECTORY/../microfrontend-demo2/kubernetes/k3d/deploy.sh
 echo "Wait until microfrontend-demo2 is ready..."
 $DIRECTORY/wait-until-pod-is-ready.sh microfrontend-demo2
 
-echo "Please wait a minute or two until everything is ready"
-echo "Check if microfrontends are running at http://localhost:30082/mashroom/admin/ext/remote-portal-apps-k8s"
-echo "Find the portal at http://localhost:30082 (admin/admin)"
-
+echo "Find the portal at http://localhost:30082 (admin/admin) or (john/john)."
