@@ -2,9 +2,7 @@
 
 DIRECTORY=$(cd `dirname $0` && pwd)
 
-source $DIRECTORY/set-env.s
-
-source ./set-env.sh
+source $DIRECTORY/set-env.sh
 
 echo "Deploying Redis..."
 # Possible parameters: https://github.com/helm/charts/tree/master/stable/redis

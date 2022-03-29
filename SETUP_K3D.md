@@ -335,3 +335,9 @@ _Or manually adapt the template with the necessry envs and apply them_
 
     You might forgot to give your script the permission to run
     chmod a+x <path to sciript>
+
+### Check from the inside
+
+    To quickly create a busybox image and use the bash run: 
+    kubectl run -i --tty --rm debug --image=progrium/busybox --restart=Never -- sh
+    install packages with opkg-install, e.g. opkg-install curl
