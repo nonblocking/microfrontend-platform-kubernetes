@@ -3,9 +3,3 @@
 .idea
 *.iml
 
-portal/kubernetes/k3d/mashroom-portal-service.yaml
-portal/kubernetes/k3d/mashroom-portal-deployment.yaml
-microfrontend-demo2/kubernetes/k3d/microservice-demo2-deployment.yaml
-microfrontend-demo1/kubernetes/k3d/microservice-demo1-deployment.yaml
-k3d/configmap.yaml
-keycloak/k3d/values.yaml
