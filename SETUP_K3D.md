@@ -18,7 +18,11 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
 - [helm](https://helm.sh/)
 - [envsub](https://github.com/danday74/envsub)
 
-## Setup Platform (only for mac and linux)
+## Quickstart (mac an linux only)
+    
+    ./k3d/setup-mashroom-cluster.sh
+
+## Setup Platform
 
 ### Setup helm
 
@@ -34,7 +38,7 @@ _Or_
 
 ### Create a local registry
 
-    sudo ./k3d/setup-registry.sh
+    ./k3d/setup-registry.sh
 
 _Or_
 
@@ -45,7 +49,7 @@ _Or_
 
 This step is necessary to avoid having trouble accessing keycloak from within the cluster.
 
-    sudo ./k3d/setup-keycloak-localhost-forward.sh
+    ./k3d/setup-keycloak-localhost-forward.sh
 
 _Or_
 

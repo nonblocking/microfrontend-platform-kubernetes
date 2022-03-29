@@ -19,7 +19,7 @@ export KEYCLOAK_ADMIN_USER=admin
 export KEYCLOAK_ADMIN_PASSWORD=test
 export KEYCLOAK_REALM=Mashroom
 export KEYCLOAK_CLIENT_ID=mashroom-portal
-export KEYCLOAK_CLIENT_SECRET="copy from keycloak after setup"
+export KEYCLOAK_CLIENT_SECRET="ba1b09ab-cab1-41c3-ba2d-939ac77a934c"
 
 export RABBITMQ_USER=rabbitmq
 export RABBITMQ_PASSWORD=BJ-63VLqCT

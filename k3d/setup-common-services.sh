@@ -43,6 +43,6 @@ helm install keycloak \
 keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
   codecentric/keycloak
 
-echo "Successfully setup cluster!"
+echo "Successfully setup common services!"
 
 echo "Keycloak is available at http://keycloak-http:${NODE_PORT_KEYCLOAK}}"
