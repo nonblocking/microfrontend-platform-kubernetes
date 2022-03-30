@@ -22,7 +22,7 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
     
     ./k3d/setup-mashroom-cluster.sh
 
-## Setup Platform
+## Setup Platform (step by step guide)
 
 ### Setup helm
 

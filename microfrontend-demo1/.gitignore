@@ -2,5 +2,4 @@
 node_modules
 dist
 
-/kubernetes/microservice-demo1-deployment.yaml
-/kubernetes/k3d/microservice-demo1-deployment.yaml
+microservice-demo1-deployment.yaml

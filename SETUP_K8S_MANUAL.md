@@ -5,6 +5,8 @@ This describes how to setup such a platform manually on an arbitrary Kubernetes 
 
 If you use the *Google Kubernetes Engine* use the [GCP Setup Guide](SETUP_GCP.md) which is much simpler.
 
+If you use *K3D* use the [K3D Setup Guide](SETUP_K3D.md).
+
 ## Requirements
 
 ### Installed

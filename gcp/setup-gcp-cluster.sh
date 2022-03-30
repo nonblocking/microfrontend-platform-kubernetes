@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./set-env.sh
+DIRECTORY=$(cd `dirname $0` && pwd)
+
+source $DIRECTORY/set-env.sh
 
 echo "Creating new cluster '${CLUSTER}'..."
 gcloud container clusters create "${CLUSTER}" --zone "${ZONE}" --num-nodes=4
@@ -45,11 +47,11 @@ echo "Deploying Keycloak"
 # Possible parameters: https://github.com/codecentric/helm-charts/tree/master/charts/keycloak
 helm install keycloak \
   --version "8.3.0" \
-  -f keycloak/values.yaml \
+  -f $DIRECTORY/../keycloak/gcp/values.yaml \
   --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
 keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
   codecentric/keycloak
-kubectl apply -f ./keycloak/keycloak-ingress.yaml
+kubectl apply -f $DIRECTORY/../keycloak/gcp/keycloak-ingress.yaml
 
 echo "Creating ConfigMap with platform services..."
 echo "apiVersion: v1

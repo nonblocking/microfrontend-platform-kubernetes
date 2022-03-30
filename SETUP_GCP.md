@@ -17,6 +17,7 @@ Then install locally:
 
  * [docker](https://www.docker.com)
  * [helm](https://helm.sh/)
+ * [envsub](https://github.com/danday74/envsub)
 
 And add at least the following Helm repos:
 
@@ -35,7 +36,7 @@ Init the gcloud CLI:
 
 ##  Adapt the environment variables
 
-Edit **set-env.sh** according to your GCP settings and needs.
+Edit **gcp/set-env.sh** according to your GCP settings and needs.
 
 At very least you should set:
 
@@ -44,7 +45,7 @@ At very least you should set:
 
 ## Setup the cluster and common services
 
-    ./setup-gcp-cluster.sh
+    ./gcp/setup-gcp-cluster.sh
 
 ## Setup Keycloak Realm
 
@@ -54,24 +55,16 @@ Wait until
 
 shows Ready 1/1. Then execute:
 
-    cd keycloak
-    ./setup-mashroom-realm.sh
-    cd ..
+    ./keycloak/gcp/setup-mashroom-realm.sh
 
 ## Deploy the Mashroom Portal
 
-    cd portal
-    npm run deploy
-    cd ..
+    ./portal/kubernetes/gcp/deploy.sh
 
 ## Deploy the Microfrontends
 
-     cd microfrontend-demo1
-     npm run deploy
-     cd ..
-     cd microfrontend-demo2
-     npm run deploy
-     cd ..
+     ./microfrontend-demo1/kubernetes/gcp/deploy.sh
+     ./microfrontend-demo2/kubernetes/gcp/deploy.sh
 
 ## Check if the platform is up and running
 

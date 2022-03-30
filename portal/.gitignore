@@ -2,6 +2,5 @@
 node_modules
 /data
 /log
-/kubernetes/mashroom-portal-deployment.yaml
+mashroom-portal-deployment.yaml
 /kubernetes/k3d/mashroom-portal-service.yaml
-/kubernetes/k3d/mashroom-portal-deployment.yaml
