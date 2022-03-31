@@ -4,6 +4,20 @@ DIRECTORY=$(cd `dirname $0` && pwd)
 
 source $DIRECTORY/set-env.sh
 
+echo "Deploying MySQL"
+# Possible parameters: https://github.com/helm/charts/tree/master/stable/mysql
+helm install mysql \
+  --version "1.6.9" \
+  --set image=mysql,imageTag=8.0-oracle,replicaSet.enabled=true,mysqlDatabase=${MYSQL_DATABASE},mysqlUser=${MYSQL_USER},mysqlPassword=${MYSQL_PASSWORD} \
+    stable/mysql
+
+echo "Wait until mysql is ready..."
+$DIRECTORY/wait-until-pod-is-ready.sh mysql
+
+# pls do not delete
+echo "Checking if mysql works..."
+$DIRECTORY/check-if-mysql-works.sh ${MYSQL_USER} ${MYSQL_PASSWORD}
+
 echo "Deploying Redis..."
 # Possible parameters: https://github.com/helm/charts/tree/master/stable/redis
 helm install redis \
@@ -25,12 +39,6 @@ helm install mongodb \
   --set replicaSet.enabled=true,mongodbDatabase=${MONGODB_DATABASE},mongodbUsername=${MONGODB_USER},mongodbPassword=${MONGODB_PASSWORD} \
     bitnami/mongodb
 
-echo "Deploying MySQL"
-# Possible parameters: https://github.com/helm/charts/tree/master/stable/mysql
-helm install mysql \
-  --version "1.6.9" \
-  --set replicaSet.enabled=true,mysqlDatabase=${MYSQL_DATABASE},mysqlUser=${MYSQL_USER},mysqlPassword=${MYSQL_PASSWORD} \
-    stable/mysql
 
 echo "Deploying Keycloak"
 envsub ${DIRECTORY}/../keycloak/k3d/values_template.yaml ${DIRECTORY}/../keycloak/k3d/values.yaml
@@ -40,8 +48,9 @@ helm install keycloak \
   --version "8.3.0" \
   -f ${DIRECTORY}/../keycloak/k3d/values.yaml \
   --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
-keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
+keycloak.persistence.dbHost=mysql,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
   codecentric/keycloak
+
 
 echo "Successfully setup common services!"
 
