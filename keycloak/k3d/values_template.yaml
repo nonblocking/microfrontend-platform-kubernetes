@@ -17,4 +17,4 @@ keycloak:
 
     extraEnv: |
         - name: JDBC_PARAMS
-          value: useSSL=false
+          value: useSSL=false&allowPublicKeyRetrieval=true
