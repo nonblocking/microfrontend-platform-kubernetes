@@ -18,8 +18,8 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
 - [helm](https://helm.sh/)
 - [envsub](https://github.com/danday74/envsub)
 
-## Quickstart (mac and linux only)
-    
+## Quickstart (MacOS and linux only)
+
     ./k3d/setup-mashroom-cluster.sh
 
 ## Setup Platform (step by step guide)
@@ -342,6 +342,6 @@ _Or manually adapt the template with the necessry envs and apply them_
 
 ### Check from the inside
 
-    To quickly create a busybox image and use the bash run: 
+    To quickly create a busybox image and use the bash run:
     kubectl run -i --tty --rm debug --image=progrium/busybox --restart=Never -- sh
     install packages with opkg-install, e.g. opkg-install curl

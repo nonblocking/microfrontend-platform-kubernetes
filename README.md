@@ -4,7 +4,7 @@
 This document describes a production ready concept for a Microfrontend platform based
 on [Mashroom Portal](https://mashroom-server.com) and [Kubernetes](https://kubernetes.io).
 
-The repo contains scripts to setup the complete platform within seconds on [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine).
+This repo contains scripts to setup the complete platform within seconds on [k3d](https://k3d.io) or [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine).
 But it can of course be deployed on every Kubernetes cluster similarly.
 
 ## The platform
@@ -47,7 +47,7 @@ The outlined platform consists of:
      * @mashroom/mashroom-messaging-external-provider-amqp
      * @mashroom/mashroom-monitoring-metrics-collector
      * @mashroom/mashroom-monitoring-prometheus-exporter
- * A bunch *Mashroom Portal* compliant of Microfrontends
+ * A bunch *Mashroom Portal* compliant Microfrontends
 
 ## Setup Guides
 
@@ -67,10 +67,9 @@ The outlined platform consists of:
    So, for a production ready setup enable HTTPS for both Portal and Keycloak.
    For GKE follow [the Ingress guide](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress).
  * You should use a CI/CD pipeline to deploy the Portal and the Microfrontends automatically after code changes.
-   One way would be to deploy Jenkins on the cluster or to install [Spinnaker](https://www.spinnaker.io/).
-   Alternatively use a Cloud service such as [Google Cloud Build](https://github.com/marketplace/google-cloud-build).
+   There are multipe tools out there, like [Argo CD](https://argoproj.github.io/cd), [Spinnaker](https://www.spinnaker.io) or [JenkinsX](https://jenkins-x.io).
  * You should use namespaces to separate common stuff services from your Microfrontends.
- * Some of the resources (like MySQL) or not configured for high availability yet
+ * Some resources (like MySQL) are not configured for high availability yet
  * You should also deploy [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) for monitoring the Portal.
    [Here](https://github.com/nonblocking/mashroom/blob/master/packages/plugin-packages/mashroom-monitoring-prometheus-exporter/test/grafana-test/grafana/provisioning/dashboards/Mashroom%20Dashboard.json) you can find an example Dashboard configuration.
  * Checkout this article how to replace a Microfrontend on K8S with a local version with Telepresence:
