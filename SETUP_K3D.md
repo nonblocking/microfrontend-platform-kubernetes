@@ -298,7 +298,9 @@ _Or manually adapt the template with the necessry envs and apply them_
 
 ## Check if the platform is up and running
 
-- Enter http://localhost:30082 in your browser
+- Install [Lens](https://k8slens.dev/) or a similar tool, connect to the cluster and check the workloads:
+  ![Workloads](./images/K3D_workloads.png)
+- Enter http://localhost:30082 in your browser~~``
 - Login as admin user
 - On an arbitrary page click _Add App_, search for _Microfrontend Demo1_ and add via Drag'n'Drop:
   ![Microfrontends](./images/microfrontends.png)
