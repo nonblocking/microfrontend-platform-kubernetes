@@ -16,9 +16,9 @@
         "request": "^2.88.2"
     },
     "devDependencies": {
-        "@mashroom/mashroom": "2.0.0",
-        "@mashroom/mashroom-portal": "2.0.0",
-        "@mashroom/mashroom-json-schemas": "2.0.0",
+        "@mashroom/mashroom": "^2.0.1",
+        "@mashroom/mashroom-portal": "^2.0.1",
+        "@mashroom/mashroom-json-schemas": "^2.0.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "@babel/cli": "^7.14.8",
