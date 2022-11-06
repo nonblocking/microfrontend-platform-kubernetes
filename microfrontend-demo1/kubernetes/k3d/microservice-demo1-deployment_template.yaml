@@ -13,6 +13,10 @@ spec:
             labels:
                 app: microfrontend-demo1
         spec:
+            securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
             containers:
                 -   name: mashroom-portal
                     image: k3d-${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}/microfrontend-demo1:latest

@@ -4,7 +4,7 @@
 This document describes a production ready concept for a Microfrontend platform based
 on [Mashroom Portal](https://mashroom-server.com) and [Kubernetes](https://kubernetes.io).
 
-This repo contains scripts to setup the complete platform within seconds on [k3d](https://k3d.io) or [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine).
+This repo contains scripts to set up the complete platform within minutes on [k3d](https://k3d.io).
 But it can of course be deployed on every Kubernetes cluster similarly.
 
 ## The platform
@@ -54,11 +54,8 @@ The outlined platform consists of:
 > Note: The setup guides assume you're working in a shell. So all the manual steps and scripts work on
 > Linux and macOS, but they also should work with any BASH emulation on Windows.
 
- * [Setup Guide for Google Cloud Platform](SETUP_GCP.md)
  * [K3d Setup Guide for Kubernetes](SETUP_K3D.md)
  * [Manual Setup Guide for Kubernetes](SETUP_K8S_MANUAL.md)
-
-
  * [Local Development Setup](SETUP_LOCAL_DEV.md)
 
 ## Notes

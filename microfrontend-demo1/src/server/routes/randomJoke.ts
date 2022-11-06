@@ -15,13 +15,13 @@ const getAsync = promisify<string>(get) as (
 export default async (req: Request, res: Response): Promise<void> => {
     try {
         const { statusCode, body } = await getAsync(
-            "http://api.icndb.com/jokes/random",
+            "https://api.chucknorris.io/jokes/random",
         );
         const data: JokeApiResponse = JSON.parse(body);
 
-        if (statusCode === 200 && data.type === "success") {
+        if (statusCode === 200) {
             const randomJoke: RandomJoke = {
-                joke: data.value.joke,
+                joke: data.value,
             };
             res.json(randomJoke);
         } else {

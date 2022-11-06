@@ -19,4 +19,4 @@ kubectl apply -f $DIRECTORY/mashroom-portal-deployment.yaml
 envsub $DIRECTORY/mashroom-portal-service_template.yaml $DIRECTORY/mashroom-portal-service.yaml
 kubectl apply -f $DIRECTORY/mashroom-portal-service.yaml
 
-echo "Portal is available at: http://${CLUSTER_IP}:${NODE_PORT_PORTAL} (takes some time after the first deployment)"
+echo "Portal will be available at: http://${CLUSTER_IP}:${NODE_PORT_PORTAL} (takes some time after the first deployment)"

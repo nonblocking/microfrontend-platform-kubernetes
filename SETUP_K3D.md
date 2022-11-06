@@ -18,289 +18,43 @@ If you use any other technology to run a k8s cluster please follow the [Setup K8
 - [helm](https://helm.sh/)
 - [envsub](https://github.com/danday74/envsub)
 
-## Quickstart (MacOS and linux only)
+## Create a new cluster and setup the Microfrontend platform
 
     ./k3d/setup-mashroom-cluster.sh
 
-## Setup Platform (step by step guide)
+This creates a new Kubernetes cluster, sets up the common services and deploys the *Mashroom Portal*
+with two demo Microfrontends.
 
-### Setup helm
+After the script finishes the Portal should now be available under http://localhost:30082,
+and you should be able to add *Microfrontend Demo1* and *Microfrontend Demo2* to any page.
 
-And add at least the following Helm repos:
-
-    ./k3d/setup-helm.sh
-
-_Or_
-
-    helm repo add stable https://charts.helm.sh/stable
-    helm repo add codecentric https://codecentric.github.io/helm-charts
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-
-### Create a local registry
-
-    ./k3d/setup-registry.sh
-
-_Or_
-
-    k3d registry create <LOCAL_REGISTRY_NAME> --port <LOCAL_REGISTRY_PORT>
-    Add `127.0.0.1 k3d-<LOCAL_REGISTRY_NAME>` to `/etc/hosts` (windows: `C:\Windows\System32\drivers\etc\hosts`)
-
-### Forward keycloak-http to localhost
-
-This step is necessary to avoid having trouble accessing keycloak from within the cluster.
-
-    ./k3d/setup-keycloak-localhost-forward.sh
-
-_Or_
-
-    Add `127.0.0.1 keycloak-http` to `/etc/hosts` (windows: `C:\Windows\System32\drivers\etc\hosts`)
-
-### Create a k3d cluster
-
-    ./k3d/setup-k3d-cluster.sh
-
-_Or_
-
-    k3d cluster create <CLUSTER_NAME> --agents <NUM_AGENTS> -p "<NODE_PORT_RANGE_FROM>-<NODE_PORT_RANGE_TO>:<NODE_PORT_RANGE_FROM>-<NODE_PORT_RANGE_TO>@agent:0" --registry-use     k3d-<LOCAL_REGISTRY_NAME>:<LOCAL_REGISTRY_PORT>
-
-_Make sure kubectl uses the right context_
-
-    kubectl config get-contexts
-    kubectl config use-context k3d-<CLUSTER_NAME>
-
-### Check K8s
-
-Run `kubectl cluster-info`
-
-The output should look similar to this:
-
-```
-Kubernetes master is running at https://localhost:55000
-CoreDNS is running at https://localhost:55000/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-Metrics-server is running at https://localhost:55000/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
-```
-
-### Setup common services
-
-    ./k3d/setup-common-services.sh
-
-_Or install Redis, RabbitMQ, MongoDB, MySQL, Keycloak manually_
-
-#### Redis
-
-    helm install redis --version "12.8.3" --set usePassword=false bitnami/redis
-
-#### RabbitMQ
-
-    helm install rabbitmq-amqp10 \
-      --version "6.17.5" \
-      --set replicas=2,rabbitmq.username=<username>,rabbitmq.password=<password>,rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
-      bitnami/rabbitmq
-
-#### MongoDB
-
-    helm install mongodb \
-      --version "7.8.8" \
-      --set replicaSet.enabled=true,mongodbDatabase=<portal_db_name>,mongodbUsername=<portal_db_user>,mongodbPassword=<portal_db_password**> \
-      bitnami/mongodb
-
-#### MySQL
-
-    helm install mysql \
-      --version "1.6.9" \
-      --set replicaSet.enabled=true,mysqlDatabase=<keycloak_db_name>,mysqlUser=<keycloak_db_user>,mysqlPassword=<keycloak_db_password> \
-        stable/mysql
-
-#### Keycloak
-
-    Fill out the ./keycloak/k3d/values.yaml file and run
-
-    helm install keycloak \
-      --version "8.3.0" \
-      -f ./keycloak/k3d/values.yaml \
-      --set keycloak.persistence.dbName=<keycloak_db_name>,keycloak.persistence.dbUser=<keycloak_db_user>,keycloak.persistence.dbPassword=<keycloak_db_password>,\
-    keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=<keycloak_admin_user>,keycloak.password=<keycloak_admin_password> \
-      codecentric/keycloak
-
-##### Check if keycloak is ready
-
-    kubectl get pods
-
-    Output should be like:
-    keycloak-0               1/1     Running   0          2m24s
-    keycloak-1               1/1     Running   0          2m24s
-
-Go to http://localhost:30081/
-
-#### Setup a keycloak realm
-
-- Open [keycloak](http://localhost:30081/)
-- Login to Keycloak (default admin/test) and setup a new Realm called `Mashroom` and a OpenID connect client
-  called `mashroom-portal`
-- In the _Settings_ tab enter http://localhost:30082/* as valid redirect URL
-- In the _Settings_ tab set Access Type _confidential_
-- Save
-- To map the roles to a scope/claim goto _Mappers_, click _Add Builtin_ and add a _realm roles_ mapper. In the field _Token Claim Name_ enter _roles_. Also check _Add to ID token_.
-- Save
-- In the _Credentials_ tab you'll find the client secret -> **copy it to `./k3d/set-env.sh` or export/set an env
-  variable called _KEYCLOAK_CLIENT_SECRET_**
-- Add a role _mashroom-admin_
-- Go to [users](http://localhost:30081/auth/admin/master/console/#/realms/Mashroom/users) and add an admin user. Under _
-  credentials_ set a default password. Under _role mappings_ add the role _mashroom-admin_ to this user
-- Go to [users](http://localhost:30081/auth/admin/master/console/#/realms/Mashroom/users) and add a user called john.
-  Under _credentials_ set a default password. Do not add the _mashroom-admin_ role to this user!
-
-#### Create a ConfigMap for the common services
-
-    ./k3d/setup-configmap.sh
-
-_Or fill out and run_
-
-```yaml
-echo "apiVersion: v1
-kind: ConfigMap
-metadata:
-    name: platform-services
-    namespace: default
-data:
-    REDIS_HOST: redis-master.default
-    REDIS_PORT: "6379"
-    RABBITMQ_HOST: rabbitmq-amqp10.default
-    RABBITMQ_PORT: "5672"
-    RABBITMQ_USER: $RABBITMQ_USER
-    MONGODB_CONNECTION_URI: mongodb://<portal_db_user>:<portal_db_password>@mongodb-primary-0.mongodb-headless.default:27017,mongodb-secondary-0.mongodb-headless.default:27017/<portal_db_name>?replicaSet=rs0
-    KEYCLOAK_URL: http://keycloak-http:<NODE_PORT_KEYCLOAK>
-```
-
-## Deploy the Mashroom Portal
-
-### Create a service account
-
-It must have the permission to fetch all services for the namespace with the Microfrontends.
-
-    ./k3d/setup-portal-service-account.sh
-
-_Or_
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-    name: mashroom-portal
-    namespace: default
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-    name: list-services-cluster-role
-rules:
-    -   apiGroups:
-            - ""
-        resources:
-            - services
-        verbs:
-            - get
-            - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-    name: mashroom-portal-role-binding
-    namespace: default
-subjects:
-    -   kind: ServiceAccount
-        name: mashroom-portal
-roleRef:
-    kind: ClusterRole
-    name: list-services-cluster-role
-    apiGroup: rbac.authorization.k8s.io
-```
-
-### Create Portal docker image
+## Re-Deploy the Mashroom Portal
 
     ./portal/kubernetes/k3d/docker-build-and-push.sh
+    kubectl rollout restart deployment mashroom-portal
 
-_Or_
-
-    cd portal
-    npm install
-    docker build -t mashroom-portal:latest .
-    docker tag mashroom-portal:latest k3d-<LOCAL_REGISTRY_NAME>:<LOCAL_REGISTRY_PORT>/mashroom-portal:latest
-    docker push k3d-<LOCAL_REGISTRY_NAME>:<LOCAL_REGISTRY_PORT>/mashroom-portal:latest
-    cd ..
-
-### Deploy Portal on Kubernetes
+Or delete the current deployment and run
 
     ./portal/kubernetes/k3d/deploy.sh
 
-_Or manually adapt the template with the necessry envs and apply them_
-
-    kubectl apply -f portal/kubernetes/list-services-cluster-role.yaml
-    kubectl apply -f portal/kubernetes/mashroom-portal-service-account.yaml
-    kubectl apply -f portal/kubernetes/mashroom-portal-service-account-role-binding.yaml
-    kubectl apply -f portal/kubernetes/k3d/mashroom-portal-deployment_template.yaml
-    kubectl apply -f portal/kubernetes/k3d/mashroom-portal-service_template.yaml
-
-### Check if the portal is running
-
-    kubectl get pods
-
-    Outcome should be similar to:
-    ```
-    mashroom-portal-5cdfd9bc5b-8t672   1/1     Running   0          97s
-    ```
-
-    You can check the logs by running:
-
-    kubectl logs mashroom-portal-5cdfd9bc5b-8t672
-
-## Deploy the Microfrontends
-
-To deploy microfrontend-demo1 (microfrontend-demo2) can be deployed similar:
-
-### Create microfontends docker images
+## Re-Deploy the Microfrontends
 
     ./microfrontend-demo1/kubernetes/k3d/docker-build-and-push.sh
+     kubectl rollout restart deployment microfrontend-demo1
+
     ./microfrontend-demo2/kubernetes/k3d/docker-build-and-push.sh
+     kubectl rollout restart deployment microfrontend-demo2
 
-_Or_
-
-    cd microfrontend-demo1
-    npm i
-    npm run build
-    docker build -t nonblocking/microfrontend-demo1:latest .
-    docker tag nonblocking/microfrontend-demo1:latest k3d-mashroomregistry.localhost:12345/nonblocking/microfrontend-demo1:latest
-    docker push k3d-mashroomregistry.localhost:12345/nonblocking/microfrontend-demo1:latest
-    cd ..
-
-    cd microfrontend-demo2
-    npm i
-    npm run build
-    docker build -t nonblocking/microfrontend-demo2:latest .
-    docker tag nonblocking/microfrontend-demo2:latest k3d-mashroomregistry.localhost:12345/nonblocking/microfrontend-demo2:latest
-    docker push k3d-mashroomregistry.localhost:12345/nonblocking/microfrontend-demo2:latest
-    cd ..
-
-### Deploy microfrontends on Kubernetes:
+Or delete the current deployments and run
 
     ./microfrontend-demo1/kubernetes/k3d/deploy.sh
     ./microfrontend-demo2/kubernetes/k3d/deploy.sh
-
-_Or manually adapt the template with the necessry envs and apply them_
-
-`kubectl apply -f microfrontend-demo1/kubernetes/k3d/microservice-demo1-deployment_k3d.yaml`
-
-`kubectl apply -f microfrontend-demo1/kubernetes/k3d/microservice-demo1-service.yaml`
-
-`kubectl apply -f microfrontend-demo2/kubernetes/k3d/microservice-demo2-deployment_k3d.yaml`
-
-`kubectl apply -f microfrontend-demo2/kubernetes/k3d/microservice-demo2-service.yaml`
 
 ## Check if the platform is up and running
 
 - Install [Lens](https://k8slens.dev/) or a similar tool, connect to the cluster and check the workloads:
   ![Workloads](./images/K3D_workloads.png)
-- Enter http://localhost:30082 in your browser~~``
+- Enter http://localhost:30082 in your browser
 - Login as admin user
 - On an arbitrary page click _Add App_, search for _Microfrontend Demo1_ and add via Drag'n'Drop:
   ![Microfrontends](./images/microfrontends.png)

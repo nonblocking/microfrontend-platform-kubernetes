@@ -6,7 +6,7 @@ const common = require('./webpack.config');
 
 module.exports = merge(common, {
     entry: {
-        bundle: ['webpack-hot-middleware/client?reload=true', 'react-hot-loader/patch', './src/frontend/index.tsx'],
+        bundle: ['webpack-hot-middleware/client?reload=true', './src/frontend/index.tsx'],
     },
     mode: 'development',
     devtool: 'inline-source-map',

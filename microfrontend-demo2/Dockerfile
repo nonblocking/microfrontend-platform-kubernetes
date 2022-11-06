@@ -1,7 +1,7 @@
-FROM node:14.17.4-slim
+FROM node:16.18.0-slim
 WORKDIR /opt/app
 COPY package.json package-lock.json ./
 COPY ./dist ./dist
 RUN npm ci --production
-EXPOSE 6089
-CMD ["npm", "run", "start"]
+EXPOSE 6088
+CMD ["node", "dist/server/index.js"]

@@ -1,10 +1,7 @@
 
 export type JokeApiResponse = {
     type: string,
-    value: {
-        id: number,
-        joke: string,
-    }
+    value: string,
 }
 
 export type RandomJoke = {

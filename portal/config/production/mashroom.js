@@ -24,13 +24,13 @@ module.exports = {
         },
     ],
     ignorePlugins: [
-        "Mashroom Security Simple Provider",
-        "Mashroom Storage Filestore Provider",
-        "Mashroom Portal Remote App Background Job",
-        "Mashroom Portal Remote App Registry",
-        "Mashroom Portal Remote App Endpoint Services",
-        "Mashroom Portal Remote App Registry Admin Webapp",
-        "Mashroom Portal Remote App Registry Admin Webapp Integration"
+        'Mashroom Security Simple Provider',
+        'Mashroom Storage Filestore Provider',
+        'Mashroom Portal Remote App Background Job',
+        'Mashroom Portal Remote App Registry',
+        'Mashroom Portal Remote App Endpoint Services',
+        'Mashroom Portal Remote App Registry Admin Webapp',
+        'Mashroom Portal Remote App Registry Admin Webapp Integration'
     ],
     indexPage: '/portal',
     plugins: {
@@ -39,8 +39,8 @@ module.exports = {
             defaultTheme: 'Mashroom Portal Default Theme',
             warnBeforeAuthenticationExpiresSec: 120
         },
-        "Mashroom Portal Default Theme": {
-            showEnvAndVersions: SHOW_ENV_AND_VERSIONS === "true" || SHOW_ENV_AND_VERSIONS === true,
+        'Mashroom Portal Default Theme': {
+            showEnvAndVersions: SHOW_ENV_AND_VERSIONS === 'true' || SHOW_ENV_AND_VERSIONS === true,
         },
         'Mashroom Session Middleware': {
             provider: 'Mashroom Session Redis Provider',
@@ -51,24 +51,26 @@ module.exports = {
             }
         },
         'Mashroom Session Redis Provider': {
-            redisOptions: {
-                host: REDIS_HOST,
-                port: REDIS_PORT,
-                keyPrefix: 'mashroom:sess:',
+            client: {
+                redisOptions: {
+                    host: REDIS_HOST,
+                    port: REDIS_PORT,
+                }
             },
+            prefix: "mashroom:sess:",
         },
         'Mashroom Security Services': {
             provider: 'Mashroom OpenID Connect Security Provider',
             acl: './acl.json'
         },
         'Mashroom OpenID Connect Security Provider': {
-            "issuerDiscoveryUrl": `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/.well-known/uma2-configuration`,
-            "clientId": KEYCLOAK_CLIENT_ID,
-            "clientSecret": KEYCLOAK_CLIENT_SECRET,
-            "redirectUrl": `${PORTAL_URL}/openid-connect-cb`,
-            "rolesClaim": "roles",
-            "adminRoles": [
-                "mashroom-admin"
+            issuerDiscoveryUrl: `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/.well-known/uma2-configuration`,
+            clientId: KEYCLOAK_CLIENT_ID,
+            clientSecret: KEYCLOAK_CLIENT_SECRET,
+            redirectUrl: `${PORTAL_URL}/openid-connect-cb`,
+            rolesClaim: 'roles',
+            adminRoles: [
+                'mashroom-admin'
             ]
         },
         'Mashroom Helmet Middleware': {
@@ -88,10 +90,10 @@ module.exports = {
                 minPoolSize: 5,
             }
         },
-        "Mashroom Memory Cache Services": {
+        'Mashroom Memory Cache Services': {
             provider: 'Mashroom Memory Cache Redis Provider',
         },
-        "Mashroom Memory Cache Redis Provider": {
+        'Mashroom Memory Cache Redis Provider': {
             redisOptions: {
                 host: REDIS_HOST,
                 port: REDIS_PORT,
