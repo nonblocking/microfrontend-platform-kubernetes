@@ -12,7 +12,6 @@
         "@mashroom/mashroom": "^2.2.1",
         "@mashroom/mashroom-docs-static": "^2.2.1",
         "@mashroom/mashroom-browser-cache": "^2.2.1",
-        "@mashroom/mashroom-csrf-protection": "^2.2.1",
         "@mashroom/mashroom-helmet": "^2.2.1",
         "@mashroom/mashroom-http-proxy": "^2.2.1",
         "@mashroom/mashroom-websocket": "^2.2.1",
