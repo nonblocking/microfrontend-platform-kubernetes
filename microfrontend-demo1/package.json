@@ -16,9 +16,9 @@
         "request": "^2.88.2"
     },
     "devDependencies": {
-        "@mashroom/mashroom": "^2.2.1",
-        "@mashroom/mashroom-portal": "^2.2.1",
-        "@mashroom/mashroom-json-schemas": "^2.2.1",
+        "@mashroom/mashroom": "^2.2.2",
+        "@mashroom/mashroom-portal": "^2.2.2",
+        "@mashroom/mashroom-json-schemas": "^2.2.2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "@babel/cli": "^7.19.3",
@@ -52,7 +52,7 @@
         "eslint-plugin-react": "^7.31.10",
         "html-webpack-plugin": "^5.5.0",
         "jest": "^29.2.2",
-        "node-sass": "^7.0.3",
+        "sass": "^1.57.0",
         "sass-loader": "^13.1.0",
         "style-loader": "^3.3.1",
         "supervisor": "^0.12.0",
