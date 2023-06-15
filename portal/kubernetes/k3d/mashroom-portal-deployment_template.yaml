@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: mashroom-portal
-    namespace: default
+    namespace: ${COMMON_NAMESPACE}
 spec:
     replicas: 2
     selector:
@@ -20,7 +20,7 @@ spec:
                 runAsGroup: 1000
             containers:
                 -   name: mashroom-portal
-                    image: k3d-${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}/mashroom-portal:latest
+                    image: k3d-${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}/mashroom-portal:${VERSION}
                     imagePullPolicy: Always
                     env:
                         -   name: NODE_ENV
@@ -30,7 +30,7 @@ spec:
                         -   name: WAIT_BEFORE_SERVER_CLOSE
                             value: '10'
                         -   name: PORTAL_URL
-                            value: http://${CLUSTER_IP}:${NODE_PORT_PORTAL}
+                            value: http://localhost:${NODE_PORT_PORTAL}
                         -   name: KEYCLOAK_URL
                             valueFrom:
                                 configMapKeyRef:
@@ -39,9 +39,15 @@ spec:
                         -   name: KEYCLOAK_REALM
                             value: ${KEYCLOAK_REALM}
                         -   name: KEYCLOAK_CLIENT_ID
-                            value: ${KEYCLOAK_CLIENT_ID}
+                            valueFrom:
+                                secretKeyRef:
+                                    name: platform-services
+                                    key: keycloakClientId
                         -   name: KEYCLOAK_CLIENT_SECRET
-                            value: ${KEYCLOAK_CLIENT_SECRET}
+                            valueFrom:
+                                secretKeyRef:
+                                    name: platform-services
+                                    key: keycloakClientSecret
                         -   name: MONGODB_CONNECTION_URI
                             valueFrom:
                                 configMapKeyRef:
@@ -57,26 +63,11 @@ spec:
                                 configMapKeyRef:
                                     name: platform-services
                                     key: REDIS_PORT
-                        -   name: RABBITMQ_HOST
-                            valueFrom:
-                                configMapKeyRef:
-                                    name: platform-services
-                                    key: RABBITMQ_HOST
-                        -   name: RABBITMQ_PORT
-                            valueFrom:
-                                configMapKeyRef:
-                                    name: platform-services
-                                    key: RABBITMQ_PORT
-                        -   name: RABBITMQ_USER
-                            valueFrom:
-                                configMapKeyRef:
-                                    name: platform-services
-                                    key: RABBITMQ_USER
-                        -   name: RABBITMQ_PASSWORD
+                        -   name: REDIS_PASSWORD
                             valueFrom:
                                 secretKeyRef:
-                                    name: rabbitmq-amqp10
-                                    key: rabbitmq-password
+                                    name: platform-services
+                                    key: redisPassword
                     resources:
                         requests:
                             cpu: 100m

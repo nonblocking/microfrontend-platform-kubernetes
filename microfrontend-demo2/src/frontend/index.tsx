@@ -8,15 +8,13 @@ import { MashroomPortalAppPluginBootstrapFunction } from '@mashroom/mashroom-por
 const bootstrap: MashroomPortalAppPluginBootstrapFunction = (
     portalAppHostElement,
     portalAppSetup,
-    clientServices,
 ) => {
     const { restProxyPaths } = portalAppSetup || {};
-    const { restService } = clientServices;
     const restProxyPath = restProxyPaths.bff;
 
     const root = createRoot(portalAppHostElement);
     root.render(
-        <App restService={restService} restProxyPath={restProxyPath}/>
+        <App restProxyPath={restProxyPath}/>
     );
 
     return Promise.resolve({
@@ -26,5 +24,4 @@ const bootstrap: MashroomPortalAppPluginBootstrapFunction = (
     });
 };
 
-// @ts-ignore
-window.startupMicrofrontendDemo2 = bootstrap;
+(window as any).startupMicrofrontendDemo2 = bootstrap;

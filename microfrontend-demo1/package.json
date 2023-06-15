@@ -8,104 +8,70 @@
     "license": "MIT",
     "private": true,
     "engines": {
-        "node": ">=16"
+        "node": ">=18"
     },
     "dependencies": {
         "express": "^4.18.2",
-        "pino": "^8.10.0",
-        "request": "^2.88.2"
+        "pino": "^8.14.1",
+        "node-fetch": "^2.6.11"
     },
     "devDependencies": {
-        "@mashroom/mashroom": "^2.3.0",
-        "@mashroom/mashroom-portal": "^2.3.0",
-        "@mashroom/mashroom-json-schemas": "^2.3.0",
+        "@mashroom/mashroom": "^2.4.0",
+        "@mashroom/mashroom-portal": "^2.4.0",
+        "@mashroom/mashroom-json-schemas": "^2.4.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "@babel/cli": "^7.20.7",
-        "@babel/core": "^7.20.12",
-        "@babel/preset-env": "^7.20.2",
-        "@babel/preset-react": "^7.18.6",
-        "@babel/register": "^7.18.9",
+        "@babel/cli": "^7.22.5",
+        "@babel/core": "^7.22.5",
+        "@babel/preset-env": "^7.22.5",
+        "@babel/preset-react": "^7.22.5",
+        "@babel/register": "^7.22.5",
         "babel-register-ts": "^7.0.0",
         "babel-eslint": "^10.1.0",
-        "babel-jest": "^29.4.2",
+        "babel-jest": "^29.5.0",
         "babel-loader": "^9.1.2",
-        "@babel/preset-typescript": "^7.18.6",
-        "typescript": "^4.9.5",
-        "@typescript-eslint/eslint-plugin": "^5.51.0",
-        "@typescript-eslint/parser": "^5.51.0",
-        "@types/node": "^18.13.0",
+        "@babel/preset-typescript": "^7.22.5",
+        "typescript": "^5.1.3",
+        "@typescript-eslint/eslint-plugin": "^5.59.9",
+        "@typescript-eslint/parser": "^5.59.9",
+        "@types/node": "^18.15.3",
         "@types/express": "^4.17.17",
-        "@types/request": "^2.48.8",
         "@types/pino": "^7.0.5",
-        "@types/react": "^18.0.27",
-        "@types/react-dom": "^18.0.10",
-        "@types/webpack": "^5.28.0",
+        "@types/react": "^18.2.10",
+        "@types/react-dom": "^18.2.4",
+        "@types/node-fetch": "^2.6.4",
+        "@types/webpack": "^5.28.1",
         "@types/webpack-dev-middleware": "^5.3.0",
         "@types/webpack-hot-middleware": "^2.25.6",
-        "concurrently": "^7.6.0",
+        "concurrently": "^8.2.0",
         "cross-var": "^1.1.0",
-        "css-loader": "^6.7.3",
-        "eslint": "^8.27.0",
+        "css-loader": "^6.8.1",
+        "eslint": "^8.42.0",
         "eslint-plugin-import": "^2.27.5",
         "eslint-plugin-jsx-a11y": "^6.7.1",
         "eslint-plugin-react": "^7.32.2",
-        "html-webpack-plugin": "^5.5.0",
-        "jest": "^29.4.2",
-        "sass": "^1.58.0",
-        "sass-loader": "^13.2.0",
-        "style-loader": "^3.3.1",
+        "html-webpack-plugin": "^5.5.2",
+        "jest": "^29.5.0",
+        "sass": "^1.63.3",
+        "sass-loader": "^13.3.2",
+        "style-loader": "^3.3.3",
         "supervisor": "^0.12.0",
-        "webpack": "^5.75.0",
-        "webpack-cli": "^5.0.1",
-        "webpack-dev-middleware": "^6.0.1",
-        "webpack-dev-server": "^4.11.1",
+        "webpack": "^5.86.0",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-middleware": "^6.1.1",
+        "webpack-dev-server": "^4.15.1",
         "webpack-hot-middleware": "^2.25.3",
-        "webpack-merge": "^5.8.0",
+        "webpack-merge": "^5.9.0",
         "cross-env": "^7.0.3",
         "envsub": "^4.1.0"
     },
     "scripts": {
         "start": "node dist/server/index.js",
         "dev": "cross-env NODE_ENV=development supervisor --watch src -- -r \"babel-register-ts\" --inspect src/server/index.ts",
-        "dev:telepresence": "telepresence --swap-deployment microfrontend-demo1 --expose 6088 --run npm run dev",
         "build": "concurrently \"npm run type-check\" \"npm run lint\" \"npm run build:server\" \"npm run build:client\"",
         "build:server": "babel ./src/server -d dist/server --copy-files --extensions .ts",
         "build:client": "webpack --config webpack/webpack.prod.js",
         "type-check": "tsc --noEmit",
-        "lint": "eslint --ext .ts --ext .tsx --fix --quiet ./src",
-        "docker:create-image": "source ../set-env.sh && npm install && npm run build && cross-var docker build -t gcr.io/${PROJECT_ID}/microfrontend-demo1:latest -t gcr.io/${PROJECT_ID}/microfrontend-demo1:${npm_package_version} .",
-        "docker:push": "source ../set-env.sh && npm run docker:create-image && docker push gcr.io/${PROJECT_ID}/microfrontend-demo1:latest && cross-var docker push gcr.io/$PROJECT_ID/microfrontend-demo1:${npm_package_version}",
-        "docker:start": "source ../set-env.sh && docker run -e NODE_ENV=production -p 6088:6088 gcr.io/${PROJECT_ID}/microfrontend-demo1",
-        "deploy": "npm run docker:push && cd kubernetes && ./deploy.sh"
-    },
-    "mashroom": {
-        "plugins": [
-            {
-                "name": "Microfrontend Demo1",
-                "type": "portal-app2",
-                "clientBootstrap": "startupMicrofrontendDemo1",
-                "resources": {
-                    "js": [
-                        "bundle.js"
-                    ]
-                },
-                "local": {
-                    "resourcesRoot": "./dist/frontend"
-                },
-                "remote": {
-                    "resourcesRoot": "/public"
-                },
-                "defaultConfig": {
-                    "category": "Demo",
-                    "proxies": {
-                        "bff": {
-                            "targetUri": "http://localhost:6088/api"
-                        }
-                    },
-                    "appConfig": {}
-                }
-            }
-        ]
+        "lint": "eslint --ext .ts --ext .tsx --fix --quiet ./src"
     }
 }

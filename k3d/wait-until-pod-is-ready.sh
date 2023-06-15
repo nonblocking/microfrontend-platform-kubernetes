@@ -1,14 +1,15 @@
 #!/bin/bash
 
-pods=$(kubectl get pods -o=name | grep "$1" | sed "s/^.\{4\}//")
+namespace=${2:-default}
+pods=$(kubectl get pods --namespace $namespace -o=name | grep "$1" | sed "s/^.\{4\}//")
 firstPodInList=$(echo $pods | cut -d' ' -f1)
-if [ "$firstPodInList" = "" ]; then 
+if [ "$firstPodInList" = "" ]; then
     echo "Error: "$1" not found"
     exit 1
 fi
 
 isPodReady() {
-    if [ "$(kubectl get pods $firstPodInList -o 'jsonpath={.status.conditions[?(@.type=="Ready")].status'})" == "True" ] 
+    if [ "$(kubectl get pods $firstPodInList --namespace $namespace -o 'jsonpath={.status.conditions[?(@.type=="Ready")].status'})" == "True" ]
         then
             return 0
         else

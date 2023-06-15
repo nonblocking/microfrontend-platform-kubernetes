@@ -1,204 +1,197 @@
 
 # Manual Setup Guide
 
-This describes how to setup such a platform manually on an arbitrary Kubernetes cluster.
+This describes how to set up such a platform manually on an arbitrary Kubernetes cluster.
 
-If you use the *Google Kubernetes Engine* use the [GCP Setup Guide](SETUP_GCP.md) which is much simpler.
+# Install common services
 
-If you use *K3D* use the [K3D Setup Guide](SETUP_K3D.md).
+You need the following services installed or available on your cluster:
 
-## Requirements
+ * Redis
+ * MongoDB
+ * Keycloak
 
-### Installed
-
- * kubectl (installed and configured)
- * [docker](https://www.docker.com)
- * [helm](https://helm.sh/)
-
-And add at least the following Helm repos:
-
-    helm repo add stable https://charts.helm.sh/stable
-    helm repo add codecentric https://codecentric.github.io/helm-charts
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-
-### Static IP addresses/Domains
-
-You need two static IP addresses to expose Keycloak and the Portal.
-In this document the placeholders *PORTAL_IP* and *KEYCLOAK_IP* will be used.
-
-## Setup the common services
-
-### Redis
-
-    helm install redis --set usePassword=false bitnami/redis
-
-### RabbitMQ
-
-    helm install rabbitmq-amqp10 \
-      --version "6.17.5" \
-      --set replicas=2,rabbitmq.username=<username>,rabbitmq.password=<password>,rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
-      bitnami/rabbitmq
-
-### MongoDB
-
-    helm install mongodb \
-      --version "7.8.8" \
-      --set replicaSet.enabled=true,mongodbDatabase=<portal_db_name>,mongodbUsername=<portal_db_user>,mongodbPassword=<portal_db_password**> \
-      bitnami/mongodb
-
-### MySQL
-
-    helm install mysql \
-      --version "1.6.9" \
-      --set replicaSet.enabled=true,mysqlDatabase=<keycloak_db_name>,mysqlUser=<keycloak_db_user>,mysqlPassword=<keycloak_db_password> \
-        stable/mysql
+## Setup
 
 ### Keycloak
 
-#### Deployment
+ * Create a new client in your realm (e.g. mashroom)
+ * In the Settings tab set Access Type confidential
+ * Make sure the Valid Redirect URIs contain the Portal URL
+ * In the Credentials tab you'll find the client secret
+ * To map the roles to a scope/claim goto Mappers, click Add Builtin and add a realm roles mapper. In the field Token Claim Name enter roles. Also check Add to ID token
+ * You should create a role (e.g. *mashroom-admin*) for users with Administrator rights
 
-Adapt the *keycloak/value.yaml* for your needs.
+## Alternatives
 
-    helm install keycloak \
-      --version "8.3.0" \
-      -f keycloak/values.yaml \
-      --set keycloak.persistence.dbName=<keycloak_db_name>,keycloak.persistence.dbUser=<keycloak_db_user>,keycloak.persistence.dbPassword=<keycloak_db_password>,\
-    keycloak.persistence.dbHost=mysql.default,keycloak.persistence.dbPort=3306,keycloak.username=<keycloak_admin_user>,keycloak.password=<keycloak_admin_password> \
-      codecentric/keycloak
+### Storage
 
-#### Ingress
+  * Instead of MongoDB you could also use the *Mashroom Storage Filestore Provider* on production and just ship the storage (configuration) with the container
+    (which makes it readonly on production)
 
-You can use *keycloak/keycloak-ingress.yaml* as a template and than install it like this:
+### Messaging
 
-    kubectl apply -f keycloak-ingress.yaml
+ * If you don't need server-side messaging and don't want to use MongoDB for storage you don't need Redis either
+ * Instead of Redis you could use ActiveMQ, RabbitMQ or Mosquitto for message brokering (every AMQP or MQTT compliant broker will work)
 
-#### Setup Realm
+### Identity Provider
 
- * Login to Keycloak and setup a new Realm and a OpenID connect client
- * Enter https://<PORTAL_IP>/* as allowed redirect url
- * In the *Settings* tab set Access Type *confidential*
- * In the *Credentials* tab you'll find the client secret
- * To map the roles to a scope/claim goto _Mappers_, click *Add Builtin* and add a *realm roles* mapper.
-   In the field *Token Claim Name* enter *roles*. Also check *Add to ID token*.
- * Add a role *mashroom-admin*
- * Add a bunch of users and give some of them the admin role
+ * Instead of Keycloak you could use any other OpenID Connect compliant IDP
+ * You could use LDAP/AD instead (*Mashroom LDAP Security Provider* plugin)
 
-### Create a ConfigMap with the platform common services
+# Configure Mashroom Portal
 
-```yaml
-echo "apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: platform-services
-  namespace: default
-data:
-  REDIS_HOST: redis-master.default
-  REDIS_PORT: '6379'
-  RABBITMQ_HOST: rabbitmq-amqp10.default
-  RABBITMQ_PORT: '5672'
-  RABBITMQ_USER: $RABBITMQ_USER
-  MONGODB_CONNECTION_URI: mongodb://<portal_db_user>:<portal_db_password>@mongodb-primary-0.mongodb-headless.default:27017,mongodb-secondary-0.mongodb-headless.default:27017/<portal_db_name>?replicaSet=rs0
-  KEYCLOAK_URL: https://<KEYCLOAK_IP>
+Update *portal/config/production/mashroom.js* according to your setup.
+
+## Storage
+
+```javascript
+{
+    plugins: {
+        'Mashroom Storage MongoDB Provider': {
+            uri: process.env.MONGODB_CONNECTION_URL,
+            connectionOptions: {
+                minPoolSize: 5
+            }
+        }
+    }
+}
 ```
 
-## Deploy the Mashroom Portal
+## Memory Cache
 
-### Create a service account
+Optional, but recommended if you use *Mashroom Storage MongoDB Provider*
 
-It must have the permission to fetch all services for the namespace with the Microfrontends.
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-    name: mashroom-portal
-    namespace: default
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-    name: list-services-cluster-role
-rules:
-    -   apiGroups:
-            - ""
-        resources:
-            - services
-        verbs:
-            - get
-            - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-    name: mashroom-portal-role-binding
-    namespace: default
-subjects:
-    -   kind: ServiceAccount
-        name: mashroom-portal
-roleRef:
-    kind: ClusterRole
-    name: list-services-cluster-role
-    apiGroup: rbac.authorization.k8s.io
+```javascript
+{
+    plugins: {
+        'Mashroom Memory Cache Redis Provider': {
+            redisOptions: {
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT,
+                password: process.env.OPTIONAL_REDIS_PASSWORD,
+                keyPrefix: 'mashroom:cache:',
+            },
+        },
+    }
+}
 ```
 
-### Create a docker image
+## Messaging
 
-    cd portal
-    npm install
-    docker build -t <your-registry>/mashroom-portal:latest
+```javascript
+{
+    plugins: {
+        'Mashroom Messaging External Provider Redis': {
+            internalTopic: "mashroom",
+                client: {
+                redisOptions: {
+                    host: process.env.REDIS_HOST,
+                    port: process.env.REDIS_PORT,
+                    password: process.env.OPTIONAL_REDIS_PASSWORD,
+                    maxRetriesPerRequest: 3,
+                    enableOfflineQueue: false
+                }
+            }
+        }
+    }
+}
+```
+
+If you want to use an AMQP broker, check: https://github.com/nonblocking/mashroom/tree/master/packages/plugin-packages/mashroom-messaging-external-provider-amqp
+If you want to use a MQTT broker, check: https://github.com/nonblocking/mashroom/tree/master/packages/plugin-packages/mashroom-messaging-external-provider-mqtt
+
+## Identity Provider
+
+```javascript
+{
+    plugins: {
+        'Mashroom OpenID Connect Security Provider': {
+            issuerDiscoveryUrl: `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}/.well-known/uma2-configuration`,
+            clientId: process.env.KEYCLOAK_CLIENT_ID,
+            clientSecret: process.env.KEYCLOAK_CLIENT_SECRET,
+            redirectUrl: `${process.env.PORTAL_URL}/openid-connect-cb`,
+            rolesClaim: 'roles',
+            adminRoles: [
+                '<your admin role>'
+            ]
+        },
+    }
+}
+```
+
+For a different OIDC complaint IDP check: https://github.com/nonblocking/mashroom/tree/master/packages/plugin-packages/mashroom-security-provider-openid-connect
+For authentication via LDAP/AD check: https://github.com/nonblocking/mashroom/tree/master/packages/plugin-packages/mashroom-security-provider-ldap
+
+## Microfrontend scan
+
+You have to set up a scan so Mashroom can find your Microfrontends (automatically). A typical setup would be:
+
+```javascript
+{
+    plugins: {
+        'Mashroom Portal Remote App Kubernetes Background Job': {
+            refreshIntervalSec: 60,
+            k8sNamespacesLabelSelector: ["environment=test,microfrontends=true"],
+            k8sNamespaces: [],
+            serviceNameFilter: 'microfrontend-.*'
+        },
+    }
+}
+```
+
+Like this, Mashroom would pick up all services with name *microfrontend-xxx* in namespaces labeled with *environment=test* and *microfrontends=true*.
+
+You might want to pass the target environment via variable and filter the microfrontend by label instead by name like this:
+
+```javascript
+{
+    plugins: {
+        'Mashroom Portal Remote App Kubernetes Background Job': {
+            refreshIntervalSec: 60,
+            k8sNamespacesLabelSelector: [`environment=${process.env.TARGET_ENVIRONMENT},microfrontends=true`],
+            k8sServiceLabelSelector: ['microfrontend=true'],
+            k8sNamespaces: [],
+            serviceNameFilter: '.*'
+        },
+    }
+}
+```
+
+**Important Note**: To be able to scan services and namespaces in the cluster you have to set up a service account with appropriate permissions
+and assign it to the Portal pods (see below).
+
+# Deploy Portal
+
+# Set up a Service Account
+
+Check out [this example](k3d/portal-service-account_template.yaml) which gives the Portal the permission to list all
+namespaces and services in the whole cluster.
+
+# Build and push the image
+
+In *portal/* run:
+
+    docker build -t <your-registry>/mashroom-portal:latest -t <your-registry>/mashroom-portal:<your-version> .
     docker push <your-registry>/mashroom-portal:latest
+    docker push <your-registry>/mashroom-portal:<your-version>
 
-### Deploy on Kubernetes:
+# Deploy it on K8S
 
-You can use
+Check out the Deployment and Service templates in [portal/kubernetes/k3d](portal/kubernetes/k3d).
 
- * portal/kubernetes/mashroom-portal-deployment_template.yaml
- * portal/kubernetes/mashroom-portal-service.yaml
- * portal/kubernetes/mashroom-portal-ingress.yaml
+Don't forget to set a *serviceAccountName*!
 
-as template and adapt it to your needs. Important is:
+# Deploy Microfrontends
 
- * Don't forget to add correct PORTAL_URL environment variable (the public URL!)
- * Add the *serviceAccountName*
+# Build and push the image
 
-## Deploy the Microfrontends
+In *microfrontend1/* run:
 
-To deploy microfrontend-demo1 (microfrontend-demo2) can be deployed similar:
-
-### Create a docker image
-
-    cd microfrontend-demo1
-    npm install
-    npm run build
-    docker build -t <your-registry>/microfrontend-demo1:latest
+    docker build -t <your-registry>/microfrontend-demo1:latest -t <your-registry>/microfrontend-demo1:<your-version> .
     docker push <your-registry>/microfrontend-demo1:latest
+    docker push <your-registry>/microfrontend-demo1:<your-version>
 
-### Deploy on Kubernetes:
+# Deploy it on K8S
 
-You can use
-
- * microfrontend-demo1/microservice-demo1-deployment_template.yaml
- * microfrontend-demo1/microservice-demo1-service.yaml
-
-as template and adapt it to your needs.
-
-## Check if the platform is up and running
-
- * Enter https://<PORTAL_IP> in your browser
- * Login as admin user
- * On an arbitrary page click *Add App*, search for *Microfrontend Demo1* and add via Drag'n'Drop:
-   ![Microfrontends](./images/microfrontends.png)
- * You can check the registered Microfrontends on http://<ingress-ip>/portal-remote-app-registry-kubernetes
-   ![Kubernetes Services](./images/registered_k8s_services.png)
- * To check the messaging add the *Mashroom Portal Demo Remote Messaging App* (as admin) to a page,
-   open the same page as another user (john/john) and send as *john* a message to *user/admin/test* -
-   it should appear in the other users *Demo Remote Messaging App*
- * You can also check if all portal replicas are subscribed to the message broker. The RabbitMQ Admin UI can
-   be made locally available with:
-
-        kubectl port-forward --namespace default svc/rabbitmq-amqp10 15672:15672
-
-   After opening http://localhost:15672 and logging in you should be able to see the bindings on the *amqp.topic* exchange:
-   ![The platform](./images/rabbitmq_bindings.png)
- * The Prometheus metrics will be available on http://<ingress-ip>/metrics. If you open this URL you should see something like this:
-   ![Prometheus Metrics](./images/prometheus_metrics.png)
+Check out the Deployment and Service templates in [microfrontend-demo1/kubernetes/k3d](microfrontend-demo1/kubernetes/k3d).

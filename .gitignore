@@ -2,4 +2,19 @@
 
 .idea
 *.iml
-
+dist
+node_modules
+k3d/namespaces.yaml
+k3d/platform-services-configmap.yaml
+k3d/platform-services-secrets.yaml
+k3d/mongo-standalone.yaml
+k3d/portal-service-account.yaml
+keycloak/test-realm.yaml
+portal/data/storage
+portal/log
+portal/kubernetes/k3d/mashroom-portal-deployment.yaml
+portal/kubernetes/k3d/mashroom-portal-service.yaml
+microfrontend-demo1/kubernetes/k3d/microservice-demo1-deployment.yaml
+microfrontend-demo1/kubernetes/k3d/microservice-demo1-service.yaml
+microfrontend-demo2/kubernetes/k3d/microservice-demo2-deployment.yaml
+microfrontend-demo2/kubernetes/k3d/microservice-demo2-service.yaml

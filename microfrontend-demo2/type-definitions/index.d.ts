@@ -1,27 +1,33 @@
 
-export type SpaceXApiNextLaunchResponse = {
-    flight_number: number,
-    name: string,
-    date_unix: number,
-    date_utc: string,
-    rocket: string;
-    launchpad: string;
+export type RocketLaunchDotLiveResponse = {
+    result: Array<RocketLaunchDotLiveLaunch>,
 }
 
-export type SpaceXApiLaunchPadResponse = {
+export type RocketLaunchDotLiveLaunch = {
+    id: string;
     name: string;
-    full_name: string,
-}
-export type SpaceXApiRocketResponse = {
-    name: string;
-    stages: number;
-    boosters: number;
+    t0: string;
+    provider: {
+        name: string;
+    };
+    vehicle: {
+        name: string;
+    };
+    pad: {
+        name: string;
+        location: {
+            name: string;
+        }
+    };
+    missions: Array<{
+        name: string;
+    }>;
 }
 
 export type NextLaunch = {
-    flightNumber: number,
-    missionName: string,
-    launchDate: number,
-    rocketName: string,
-    launchSite: string,
+    provider: string;
+    missionName: string;
+    launchDate: number;
+    rocketName: string;
+    launchSite: string;
 }

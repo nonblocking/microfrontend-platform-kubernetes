@@ -31,9 +31,8 @@ The outlined platform consists of:
  * A *Kubernetes* cluster
  * A bunch of common services that can be used by the Portal and the Microfrontends
      * [Keycloak](https://www.keycloak.org) Identity Provider for authentication and authorization
-     * [MySQL](https://www.mysql.com/)  database
+     * A database for Keycloak, e.g [PostgreSQL](https://www.postgresql.org)
      * [Redis](https://redis.io) cluster for Portal session storage
-     * [RabbitMQ](https://www.rabbitmq.com) as message broker
      * [MongoDB](https://www.mongodb.com) for the Portal configuration
  * A [Mashroom Portal](https://mashroom-server.com) for the Microfrontend integration with the following plugins:
      * @mashroom/mashroom-storage-provider-mongodb
@@ -44,30 +43,34 @@ The outlined platform consists of:
      * @mashroom/mashroom-session-provider-redis
      * @mashroom/mashroom-websocket
      * @mashroom/mashroom-messaging
-     * @mashroom/mashroom-messaging-external-provider-amqp
+     * @mashroom/mashroom-messaging-external-provider-redis
      * @mashroom/mashroom-monitoring-metrics-collector
      * @mashroom/mashroom-monitoring-prometheus-exporter
  * A bunch *Mashroom Portal* compliant Microfrontends
 
 ## Setup Guides
 
-> Note: The setup guides assume you're working in a shell. So all the manual steps and scripts work on
-> Linux and macOS, but they also should work with any BASH emulation on Windows.
-
- * [K3d Setup Guide for Kubernetes](SETUP_K3D.md)
+ * [k3d Setup](SETUP_K3D.md)
  * [Manual Setup Guide for Kubernetes](SETUP_K8S_MANUAL.md)
  * [Local Development Setup](SETUP_LOCAL_DEV.md)
 
+## Professional Support
+
+If you need help to set up your fancy Microfrontend Platform
+contact us for [professional support](mailto:mashroom@nonblocking.at)!
+
 ## Notes
 
- * **NEVER** use OpenID Connect/OAuth2 without transport layer security in real live systems.
-   So, for a production ready setup enable HTTPS for both Portal and Keycloak.
-   For GKE follow [the Ingress guide](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress).
- * You should use a CI/CD pipeline to deploy the Portal and the Microfrontends automatically after code changes.
-   There are multipe tools out there, like [Argo CD](https://argoproj.github.io/cd), [Spinnaker](https://www.spinnaker.io) or [JenkinsX](https://jenkins-x.io).
- * You should use namespaces to separate common stuff services from your Microfrontends.
- * Some resources (like MySQL) are not configured for high availability yet
+ * The k3d demo setup is not production ready. Most notably the IDP (Keycloak) runs in dev mode with TLS disabled.
+   Furthermore, most common services (like MongoDB) are not replicated and not highly available
+ * You should put every Microfrontend in a separate repo and use different namespaces per team.
+   The Portal will automatically pick up new namespaces if they have specific labels (see *Mashroom Portal Remote App Kubernetes Background Job* config).
+ * To build a Microfrontend platform outlined here you can use the same tools and approaches as for a Microservice platform.
+   For example [Argo CD](https://argoproj.github.io/cd), [Spinnaker](https://www.spinnaker.io) or [JenkinsX](https://jenkins-x.io).
  * You should also deploy [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) for monitoring the Portal.
    [Here](https://github.com/nonblocking/mashroom/blob/master/packages/plugin-packages/mashroom-monitoring-prometheus-exporter/test/grafana-test/grafana/provisioning/dashboards/Mashroom%20Dashboard.json) you can find an example Dashboard configuration.
- * Checkout this article how to replace a Microfrontend on K8S with a local version with Telepresence:
+   And [this article](https://medium.com/mashroom-server/connecting-mashroom-to-the-grafana-observability-stack-4cd6a2520515) describes how to add tracing in the Portal.
+ * Checkout this article how to debug Microfrontend running on K8S locally with Telepresence:
    https://medium.com/mashroom-server/debug-microfrontends-on-a-kubernetes-cluster-with-telepresence-d709333ee1b7
+ * Our [Youtube Channel](https://www.youtube.com/@mashroomserver) contains videos that cover setup and deployment of Mashroom Portal
+

@@ -21,6 +21,7 @@
     },
     "rules": {
         "no-console": "off",
+        "react/display-name": "off",
         "@typescript-eslint/ban-ts-comment": "warn",
         "@typescript-eslint/no-var-requires": "warn"
     }

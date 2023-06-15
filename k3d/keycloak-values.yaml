@@ -1,0 +1,26 @@
+
+# WARNING: We run Keycloak in dev mode with TLS disabled - DON'T USE THIS SETUP IN PRODUCTION
+production: false
+
+# Import realm data from config map
+extraStartupArgs: "--import-realm"
+extraVolumeMounts:
+    -   name: test-realm-data
+        mountPath: "/opt/bitnami/keycloak/data/import"
+        readOnly: true
+extraVolumes:
+    -   name: test-realm-data
+        configMap:
+            name: test-realm
+            items:
+                -   key: "test-realm.json"
+                    path: "test-realm.json"
+
+service:
+    type: NodePort
+
+ingress:
+    enabled: false
+
+postgresql:
+    enabled: true

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: ${COMMON_NAMESPACE}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: ${MICROFRONTEND_NAMESPACE}
+    labels:
+        environment: test
+        microfrontends: "true"

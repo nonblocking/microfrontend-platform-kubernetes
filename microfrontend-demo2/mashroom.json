@@ -1,0 +1,30 @@
+{
+    "$schema": "./node_modules/@mashroom/mashroom-json-schemas/schemas/mashroom-plugins.json",
+    "plugins": [
+        {
+            "name": "Microfrontend Demo2",
+            "type": "portal-app2",
+            "clientBootstrap": "startupMicrofrontendDemo2",
+            "resources": {
+                "js": [
+                    "bundle.js"
+                ]
+            },
+            "local": {
+                "resourcesRoot": "./dist/frontend"
+            },
+            "remote": {
+                "resourcesRoot": "/public"
+            },
+            "defaultConfig": {
+                "category": "Demo",
+                "proxies": {
+                    "bff": {
+                        "targetUri": "http://localhost:6089/api"
+                    }
+                },
+                "appConfig": {}
+            }
+        }
+    ]
+}

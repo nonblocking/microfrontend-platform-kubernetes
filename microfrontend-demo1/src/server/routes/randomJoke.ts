@@ -1,32 +1,27 @@
 import { Request, Response } from "express";
-import { get } from "request";
-import { promisify } from "util";
+import fetch from "node-fetch";
 import Pino from "pino";
 
 import { JokeApiResponse, RandomJoke } from "../../../type-definitions";
 
 const pino = Pino();
-const getAsync = promisify<string>(get) as (
-    arg1: string,
-) => Promise<unknown> as (
-    arg1: string,
-) => Promise<{ statusCode: number; body: any }>;
 
 export default async (req: Request, res: Response): Promise<void> => {
     try {
-        const { statusCode, body } = await getAsync(
-            "https://api.chucknorris.io/jokes/random",
-        );
-        const data: JokeApiResponse = JSON.parse(body);
+        const result = await fetch("https://api.chucknorris.io/jokes/random");
 
-        if (statusCode === 200) {
-            const randomJoke: RandomJoke = {
-                joke: data.value,
-            };
-            res.json(randomJoke);
-        } else {
+        if (!result.ok) {
+            pino.error('Received response code: %s', result.status);
             res.sendStatus(500);
+            return;
         }
+
+        const data: JokeApiResponse = await result.json();
+
+        const randomJoke: RandomJoke = {
+            joke: data.value,
+        };
+        res.json(randomJoke);
     } catch (e: unknown) {
         pino.error(
             e as Record<string, unknown>,

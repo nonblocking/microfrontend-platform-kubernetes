@@ -8,10 +8,7 @@ const {
     MONGODB_CONNECTION_URI,
     REDIS_HOST,
     REDIS_PORT,
-    RABBITMQ_HOST,
-    RABBITMQ_PORT,
-    RABBITMQ_USER,
-    RABBITMQ_PASSWORD,
+    REDIS_PASSWORD,
     SHOW_ENV_AND_VERSIONS,
 } = process.env;
 
@@ -55,6 +52,7 @@ module.exports = {
                 redisOptions: {
                     host: REDIS_HOST,
                     port: REDIS_PORT,
+                    password: REDIS_PASSWORD,
                 }
             },
             prefix: "mashroom:sess:",
@@ -64,7 +62,7 @@ module.exports = {
             acl: './acl.json'
         },
         'Mashroom OpenID Connect Security Provider': {
-            issuerDiscoveryUrl: `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/.well-known/uma2-configuration`,
+            issuerDiscoveryUrl: `${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/.well-known/uma2-configuration`,
             clientId: KEYCLOAK_CLIENT_ID,
             clientSecret: KEYCLOAK_CLIENT_SECRET,
             redirectUrl: `${PORTAL_URL}/openid-connect-cb`,
@@ -97,6 +95,7 @@ module.exports = {
             redisOptions: {
                 host: REDIS_HOST,
                 port: REDIS_PORT,
+                password: REDIS_PASSWORD,
                 keyPrefix: 'mashroom:cache:',
             },
         },
@@ -106,7 +105,7 @@ module.exports = {
         },
         'Mashroom Http Proxy Services': {
             rejectUnauthorized: false,
-            poolMaxSockets: 10
+            poolMaxSocketsPerHost: 10
         },
         'Mashroom WebSocket Webapp': {
             restrictToRoles: null,
@@ -114,24 +113,30 @@ module.exports = {
             keepAliveIntervalSec: 15,
             maxConnections: 2000
         },
+        'Mashroom Portal Remote App Kubernetes Background Job': {
+            refreshIntervalSec: 60,
+            k8sNamespacesLabelSelector: ["environment=test,microfrontends=true"],
+            k8sNamespaces: [],
+            serviceNameFilter: 'microfrontend-.*'
+        },
         'Mashroom Messaging Services': {
-            externalProvider: 'Mashroom Messaging External Provider AMQP',
+            externalProvider: 'Mashroom Messaging External Provider Redis',
             externalTopics: [],
             userPrivateBaseTopic: 'user',
             enableWebSockets: true,
             topicACL: './topicACL.json'
         },
-        'Mashroom Portal Remote App Kubernetes Background Job': {
-            k8sNamespaces: ['default'],
-            serviceNameFilter: 'microfrontend-.*'
-        },
-        'Mashroom Messaging External Provider AMQP': {
-            brokerTopicExchangePrefix: '/topic/',
-            brokerTopicMatchAny: '#',
-            brokerHost: RABBITMQ_HOST,
-            brokerPort: RABBITMQ_PORT,
-            brokerUsername: RABBITMQ_USER,
-            brokerPassword: RABBITMQ_PASSWORD
+        'Mashroom Messaging External Provider Redis': {
+            internalTopic: "mashroom",
+            client: {
+                redisOptions: {
+                    host: REDIS_HOST,
+                    port: REDIS_PORT,
+                    password: REDIS_PASSWORD,
+                    maxRetriesPerRequest: 3,
+                    enableOfflineQueue: false
+                }
+            }
         }
     }
 };

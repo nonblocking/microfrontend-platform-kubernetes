@@ -4,54 +4,57 @@ DIRECTORY=$(cd `dirname $0` && pwd)
 
 source $DIRECTORY/set-env.sh
 
-echo "Deploying MySQL"
-# Possible parameters: https://github.com/helm/charts/tree/master/stable/mysql
-helm install mysql \
-  --version "1.6.9" \
-  --set image=mysql,imageTag=8.0-oracle,replicaSet.enabled=true,mysqlDatabase=${MYSQL_DATABASE},mysqlUser=${MYSQL_USER},mysqlPassword=${MYSQL_PASSWORD} \
-    stable/mysql
-
-echo "Wait until mysql is ready..."
-$DIRECTORY/wait-until-pod-is-ready.sh mysql
-
-# pls do not delete
-echo "Checking if mysql works..."
-$DIRECTORY/check-if-mysql-works.sh ${MYSQL_USER} ${MYSQL_PASSWORD}
+echo "Creating namespaces"
+envsub ${DIRECTORY}/namespaces_template.yaml ${DIRECTORY}/namespaces.yaml
+kubectl apply -f ${DIRECTORY}/namespaces.yaml
 
 echo "Deploying Redis..."
-# Possible parameters: https://github.com/helm/charts/tree/master/stable/redis
+# Possible parameters: https://artifacthub.io/packages/helm/bitnami/redis
 helm install redis \
-  --version "12.8.3" \
-  --set usePassword=false \
-    bitnami/redis
-
-echo "Deploying RabbitMQ with AMQP 1.0 plugin..."
-# Possible parameters: https://github.com/helm/charts/tree/master/stable/rabbitmq
-helm install rabbitmq-amqp10 \
-  --version "6.17.5" \
-  --set replicas=2,rabbitmq.username=${RABBITMQ_USER},rabbitmq.password=${RABBITMQ_PASSWORD},rabbitmq.plugins="rabbitmq_management rabbitmq_peer_discovery_k8s rabbitmq_amqp1_0" \
-    bitnami/rabbitmq
+  --version "17.11.3" \
+  --namespace "${COMMON_NAMESPACE}" \
+  --set architecture=standalone,auth.password=${REDIS_PASSWORD} \
+    oci://registry-1.docker.io/bitnamicharts/redis
 
 echo "Deploying MongoDB"
-# Possible parameters: https://github.com/helm/charts/tree/master/stable/mongodb
-helm install mongodb \
-  --version "7.8.8" \
-  --set replicaSet.enabled=true,mongodbDatabase=${MONGODB_DATABASE},mongodbUsername=${MONGODB_USER},mongodbPassword=${MONGODB_PASSWORD} \
-    bitnami/mongodb
+envsub ${DIRECTORY}/mongo-standalone_template.yaml ${DIRECTORY}/mongo-standalone.yaml
+kubectl apply -f ${DIRECTORY}/mongo-standalone.yaml
+# Unfortunately this Helm chart doesn't work on M1, see https://github.com/bitnami/containers/issues/33409
+# Possible parameters: https://artifacthub.io/packages/helm/bitnami/mongodb
+#helm install mongodb \
+#  --version "13.15.1" \
+#  --namespace "${COMMON_NAMESPACE}" \
+#  --set auth.database=${MONGODB_DATABASE},auth.username=${MONGODB_USER},auth.password=${MONGODB_PASSWORD} \
+#    oci://registry-1.docker.io/bitnamicharts/mongodb
 
+echo "Deploying Keycloak with Postgres"
+envsub ${DIRECTORY}/../keycloak/test-realm_template.yaml ${DIRECTORY}/../keycloak/test-realm.yaml
+kubectl apply -f ${DIRECTORY}/../keycloak/test-realm.yaml
 
-echo "Deploying Keycloak"
-envsub ${DIRECTORY}/../keycloak/k3d/values_template.yaml ${DIRECTORY}/../keycloak/k3d/values.yaml
-
-# Possible parameters: https://github.com/codecentric/helm-charts/tree/master/charts/keycloak
+# Possible parameters: https://artifacthub.io/packages/helm/bitnami/keycloak
 helm install keycloak \
-  --version "8.3.0" \
-  -f ${DIRECTORY}/../keycloak/k3d/values.yaml \
-  --set keycloak.persistence.dbName=${MYSQL_DATABASE},keycloak.persistence.dbUser=${MYSQL_USER},keycloak.persistence.dbPassword=${MYSQL_PASSWORD},\
-keycloak.persistence.dbHost=mysql,keycloak.persistence.dbPort=3306,keycloak.username=${KEYCLOAK_ADMIN_USER},keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
-  codecentric/keycloak
+  --version "15.1.3" \
+  --namespace "${COMMON_NAMESPACE}" \
+  -f ${DIRECTORY}/keycloak-values.yaml \
+  --set auth.adminUser=${KEYCLOAK_ADMIN_USER},auth.adminPassword=${KEYCLOAK_ADMIN_PASSWORD},service.ports.http=${NODE_PORT_KEYCLOAK},service.nodePorts.http=${NODE_PORT_KEYCLOAK} \
+  oci://registry-1.docker.io/bitnamicharts/keycloak
 
+echo "Adding keycloak-localhost forward to /etc/hosts - REQUIRES ROOT ACCESS"
+sudo $DIRECTORY/setup-keycloak-localhost-forward.sh
+
+echo "Wait until Keycloak is ready..."
+$DIRECTORY/wait-until-pod-is-ready.sh keycloak-0 mashroom-common
+
+echo "Keycloak is available at http://localhost:${NODE_PORT_KEYCLOAK}"
+
+echo "Setup platform ConfigMap and Secret..."
+envsub ${DIRECTORY}/platform-services-configmap_template.yaml ${DIRECTORY}/platform-services-configmap.yaml
+envsub ${DIRECTORY}/platform-services-secrets_template.yaml ${DIRECTORY}/platform-services-secrets.yaml
+kubectl apply -f ${DIRECTORY}/platform-services-configmap.yaml
+kubectl apply -f ${DIRECTORY}/platform-services-secrets.yaml
+
+echo "Setup Portal service account..."
+envsub ${DIRECTORY}/portal-service-account_template.yaml ${DIRECTORY}/portal-service-account.yaml
+kubectl apply -f ${DIRECTORY}/portal-service-account.yaml
 
 echo "Successfully setup common services!"
-
-echo "Keycloak is available at http://keycloak-http:${NODE_PORT_KEYCLOAK}}"

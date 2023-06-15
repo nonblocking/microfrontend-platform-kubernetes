@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: platform-services
+    namespace: ${COMMON_NAMESPACE}
+data:
+    REDIS_HOST: redis-master.${COMMON_NAMESPACE}
+    REDIS_PORT: "6379"
+    MONGODB_CONNECTION_URI: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb-standalone.${COMMON_NAMESPACE}:27017
+    KEYCLOAK_URL: http://keycloak.${COMMON_NAMESPACE}:${NODE_PORT_KEYCLOAK}

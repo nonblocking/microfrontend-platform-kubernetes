@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
     name: microfrontend-demo1
-    namespace: default
+    namespace: ${MICROFRONTEND_NAMESPACE}
     labels:
         app: microfrontend-demo1
 spec:

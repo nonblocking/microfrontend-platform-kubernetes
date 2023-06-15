@@ -5,18 +5,14 @@ DIRECTORY=$(cd `dirname $0` && pwd)
 source $DIRECTORY/set-env.sh
 
 echo "Uninstall Redis..."
-helm uninstall redis 
-
-echo "Uninstall RabbitMQ..."
-helm uninstall rabbitmq-amqp10
+helm delete redis --namespace "${COMMON_NAMESPACE}"
 
 echo "Uninstall MongoDB"
-helm uninstall mongodb 
+kubectl delete -f ${DIRECTORY}/mongo-standalone.yaml
+#helm delete mongodb --namespace "${COMMON_NAMESPACE}"
 
-echo "Uninstall MySQL"
-helm uninstall mysql 
-
-helm uninstall keycloak 
+echo "Uninstall Keycloak"
+helm delete keycloak --namespace "${COMMON_NAMESPACE}"
 
 echo "Successfully uninstalled common services!"
 

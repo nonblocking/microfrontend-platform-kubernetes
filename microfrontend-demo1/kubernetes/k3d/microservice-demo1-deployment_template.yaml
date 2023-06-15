@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: microfrontend-demo1
-    namespace: default
+    namespace: ${MICROFRONTEND_NAMESPACE}
 spec:
     replicas: 2
     selector:
@@ -19,7 +19,7 @@ spec:
                 runAsGroup: 1000
             containers:
                 -   name: mashroom-portal
-                    image: k3d-${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}/microfrontend-demo1:latest
+                    image: k3d-${LOCAL_REGISTRY_NAME}:${LOCAL_REGISTRY_PORT}/microfrontend-demo1:${VERSION}
                     imagePullPolicy: Always
                     env:
                         -   name: NODE_ENV

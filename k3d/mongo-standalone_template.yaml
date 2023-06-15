@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: mongodb-standalone-pvc
+    namespace: ${COMMON_NAMESPACE}
+spec:
+    accessModes:
+        - ReadWriteOnce
+    storageClassName: local-path
+    resources:
+        requests:
+            storage: 2Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: mongodb-standalone
+    namespace: ${COMMON_NAMESPACE}
+spec:
+    serviceName: mongodb-standalone
+    replicas: 1
+    selector:
+        matchLabels:
+            app: mongodb-standalone
+    template:
+        metadata:
+            labels:
+                app: mongodb-standalone
+        spec:
+            containers:
+                -   name: mongodb-standalone
+                    image: mongo:6.0.6
+                    args: [ "--dbpath","/data/db" ]
+                    env:
+                        -   name: MONGO_INITDB_DATABASE
+                            value: ${MONGODB_DATABASE}
+                        -   name: MONGO_INITDB_ROOT_USERNAME
+                            value: ${MONGODB_USER}
+                        -   name: MONGO_INITDB_ROOT_PASSWORD
+                            value: ${MONGODB_PASSWORD}
+                    volumeMounts:
+                        -   name: mongodb-standalone-data
+                            mountPath: "/data/db"
+                    readinessProbe:
+                        exec:
+                            command:
+                                - mongosh
+                                - --eval
+                                - "db.adminCommand('ping')"
+                        initialDelaySeconds: 10
+                        periodSeconds: 10
+                        timeoutSeconds: 5
+                        successThreshold: 1
+                        failureThreshold: 6
+            volumes:
+                -   name: mongodb-standalone-data
+                    persistentVolumeClaim:
+                        claimName: mongodb-standalone-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: mongodb-standalone
+    namespace: ${COMMON_NAMESPACE}
+spec:
+    ports:
+        - port: 27017
+          protocol: TCP
+          targetPort: 27017
+    selector:
+        app: mongodb-standalone

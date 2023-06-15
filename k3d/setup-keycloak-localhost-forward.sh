@@ -4,7 +4,7 @@ DIRECTORY=$(cd `dirname $0` && pwd)
 
 source $DIRECTORY/set-env.sh
 
-KEYCLOAK_HTTP="keycloak-http"
+KEYCLOAK_HTTP="keycloak.${COMMON_NAMESPACE}"
 
 echo "Adding $KEYCLOAK_HTTP to /etc/hosts."
 
