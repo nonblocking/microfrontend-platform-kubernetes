@@ -29,6 +29,6 @@ echo "Build and deploy microfrontend-demo2"
 $DIRECTORY/../microfrontend-demo2/kubernetes/k3d/build-and-deploy.sh
 
 echo "Wait until portal is ready..."
-$DIRECTORY/wait-until-pod-is-ready.sh mashroom-portal
+$DIRECTORY/wait-until-pod-is-ready.sh mashroom-portal ${COMMON_NAMESPACE}
 
 echo "Portal is available at http://localhost:30082 (admin/admin) or (john/john)"

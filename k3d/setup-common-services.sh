@@ -43,7 +43,7 @@ echo "Adding keycloak-localhost forward to /etc/hosts - REQUIRES ROOT ACCESS"
 sudo $DIRECTORY/setup-keycloak-localhost-forward.sh
 
 echo "Wait until Keycloak is ready..."
-$DIRECTORY/wait-until-pod-is-ready.sh keycloak-0 mashroom-common
+$DIRECTORY/wait-until-pod-is-ready.sh keycloak-0 ${COMMON_NAMESPACE}
 
 echo "Keycloak is available at http://localhost:${NODE_PORT_KEYCLOAK}"
 
