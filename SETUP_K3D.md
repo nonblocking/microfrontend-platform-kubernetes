@@ -54,6 +54,26 @@ and you should be able to add *Microfrontend Demo1* and *Microfrontend Demo2* to
 
         kubectl port-forward --namespace mashroom-common  svc/redis-master 6380:6379
 
+## Setup Monitoring and Lens Metrics
+
+Run
+
+    ./k3d/setup-monitoring.sh
+
+Grafana will be available at http://localhost:30083 with admin credentials test/test.
+
+Besides a bunch of useful Kubernetes dashboard there is also a preconfigured *Mashroom Portal* dashboard available:
+
+![Grafana Dashboard](./images/grafana_dashboard1.png)
+![Grafana Dashboard](./images/grafana_dashboard2.png)
+
+To enable metrics in Lens:
+
+ * From the Cluster list select *Settings* from the menu
+ * Select Metrics in the Settings menu
+ * In the *Prometheus* field select *Prometheus Operator*
+ * in the *Prometheus Service Address" field enter *monitoring/prometheus-operated:9090*
+
 ## Cleanup
 
     k3d cluster stop mashroom-cluster
