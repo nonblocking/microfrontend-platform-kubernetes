@@ -1,5 +1,4 @@
 {
-    "$schema": "./node_modules/@mashroom/mashroom-json-schemas/schemas/mashroom-packagejson-extension.json",
     "name": "microfrontend-demo1",
     "description": "Microfrontend Demo 1 - shows some random Chuck Norris choke from http://api.icndb.com/jokes/random",
     "version": "1.0.0",
@@ -16,9 +15,9 @@
         "node-fetch": "^2.7.0"
     },
     "devDependencies": {
-        "@mashroom/mashroom": "^2.5.0",
-        "@mashroom/mashroom-portal": "^2.5.0",
-        "@mashroom/mashroom-json-schemas": "^2.5.0",
+        "@mashroom/mashroom": "^2.5.1",
+        "@mashroom/mashroom-portal": "^2.5.1",
+        "@mashroom/mashroom-json-schemas": "^2.5.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "@babel/cli": "^7.23.4",
