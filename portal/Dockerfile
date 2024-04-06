@@ -1,4 +1,4 @@
-FROM node:18.16.0-slim
+FROM node:20.12.0-slim
 ARG VERSION
 WORKDIR /opt/app
 COPY package.json package-lock.json mashroom-starter.js ./
