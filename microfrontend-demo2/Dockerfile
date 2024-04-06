@@ -1,4 +1,4 @@
-FROM node:20.12.0-slim
+FROM node:20.12.1-slim
 ARG VERSION
 WORKDIR /opt/app
 COPY mashroom.json package.json package-lock.json ./
