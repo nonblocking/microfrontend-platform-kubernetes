@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import type {RandomJoke} from "../../type-definitions";
 
-import style from "./App.scss";
+import * as styles from "./App.scss";
 import fetchJoke from "./fetchJoke";
 
 type Props = {
@@ -27,7 +27,7 @@ export default ({restProxyPath}: Props) => {
     let content;
 
     if (error) {
-        content = <div className={style.Error}>Error loading</div>;
+        content = <div className={styles.Error}>Error loading</div>;
     } else if (!randomJoke) {
         content = <div>Loading...</div>;
     } else {
@@ -40,7 +40,7 @@ export default ({restProxyPath}: Props) => {
     }
 
     return (
-        <div className={style.App}>
+        <div className={styles.App}>
             {content}
         </div>
     );

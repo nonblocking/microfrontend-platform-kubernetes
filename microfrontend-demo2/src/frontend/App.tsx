@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import fetchNextLaunch from "./fetchNextLaunch";
 import type {NextLaunch} from "../../type-definitions";
 
-import style from "./App.scss";
+import * as styles from "./App.scss";
 
 type Props = {
     restProxyPath: string;
@@ -26,7 +26,7 @@ export default ({restProxyPath}: Props) => {
 
     let content;
     if (error) {
-        content = <div className={style.Error}>Error loading</div>;
+        content = <div className={styles.Error}>Error loading</div>;
     } else if (!nextLaunch) {
         content = <div>Loading...</div>;
     } else {
@@ -64,7 +64,7 @@ export default ({restProxyPath}: Props) => {
     }
 
     return (
-        <div className={style.App}>
+        <div className={styles.App}>
             {content}
         </div>
     )
