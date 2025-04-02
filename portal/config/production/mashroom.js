@@ -17,27 +17,26 @@ module.exports = {
     port: 5050,
     pluginPackageFolders: [
         {
-            'path': '../../node_modules/@mashroom',
+            path: '../../node_modules/@mashroom',
         },
     ],
     ignorePlugins: [
         'Mashroom Security Simple Provider',
         'Mashroom Storage Filestore Provider',
-        'Mashroom Portal Remote App Background Job',
-        'Mashroom Portal Remote App Registry',
-        'Mashroom Portal Remote App Endpoint Services',
-        'Mashroom Portal Remote App Registry Admin Webapp',
-        'Mashroom Portal Remote App Registry Admin Webapp Integration'
     ],
     indexPage: '/portal',
     plugins: {
         'Mashroom Portal WebApp': {
             adminApp: 'Mashroom Portal Admin App',
             defaultTheme: 'Mashroom Portal Default Theme',
-            warnBeforeAuthenticationExpiresSec: 120
+            authenticationExpiration: {
+                warnBeforeExpirationSec: 120
+            }
         },
         'Mashroom Portal Default Theme': {
             showEnvAndVersions: SHOW_ENV_AND_VERSIONS === 'true' || SHOW_ENV_AND_VERSIONS === true,
+            showPortalAppHeaders: false,
+            darkMode: 'auto'
         },
         'Mashroom Session Middleware': {
             provider: 'Mashroom Session Redis Provider',
@@ -55,7 +54,7 @@ module.exports = {
                     password: REDIS_PASSWORD,
                 }
             },
-            prefix: "mashroom:sess:",
+            prefix: 'mashroom:sess:',
         },
         'Mashroom Security Services': {
             provider: 'Mashroom OpenID Connect Security Provider',
@@ -70,6 +69,9 @@ module.exports = {
             adminRoles: [
                 'mashroom-admin'
             ]
+        },
+        'Mashroom Security Default Login Webapp': {
+            darkMode: 'auto'
         },
         'Mashroom Helmet Middleware': {
 
@@ -115,7 +117,7 @@ module.exports = {
         },
         'Mashroom Portal Remote App Kubernetes Background Job': {
             refreshIntervalSec: 60,
-            k8sNamespacesLabelSelector: ["environment=test,microfrontends=true"],
+            k8sNamespacesLabelSelector: ['environment=test,microfrontends=true'],
             k8sNamespaces: [],
             serviceNameFilter: 'microfrontend-.*'
         },
@@ -127,7 +129,7 @@ module.exports = {
             topicACL: './topicACL.json'
         },
         'Mashroom Messaging External Provider Redis': {
-            internalTopic: "mashroom",
+            internalTopic: 'mashroom',
             client: {
                 redisOptions: {
                     host: REDIS_HOST,

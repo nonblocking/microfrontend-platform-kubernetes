@@ -1,8 +1,8 @@
 
 .App {
-    padding: 10px;
+    padding: var(--mashroom-portal-spacing-default, 10px);
 }
 
 .Error {
-    color: red;
+    color: var(--mashroom-portal-color-error, red);
 }

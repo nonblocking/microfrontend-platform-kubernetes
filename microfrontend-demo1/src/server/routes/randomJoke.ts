@@ -1,14 +1,14 @@
-import { Request, Response } from "express";
-import fetch from "node-fetch";
-import Pino from "pino";
+import fetch from 'node-fetch';
+import Pino from 'pino';
+import type { Request, Response } from 'express';
 
-import { JokeApiResponse, RandomJoke } from "../../../type-definitions";
+import type { JokeApiResponse, RandomJoke } from '../../../type-definitions';
 
 const pino = Pino();
 
 export default async (req: Request, res: Response): Promise<void> => {
     try {
-        const result = await fetch("https://api.chucknorris.io/jokes/random");
+        const result = await fetch('https://api.chucknorris.io/jokes/random');
 
         if (!result.ok) {
             pino.error('Received response code: %s', result.status);
@@ -25,7 +25,7 @@ export default async (req: Request, res: Response): Promise<void> => {
     } catch (e: unknown) {
         pino.error(
             e as Record<string, unknown>,
-            "Looking up a random joke failed",
+            'Looking up a random joke failed',
         );
         res.sendStatus(500);
     }

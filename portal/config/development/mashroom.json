@@ -23,10 +23,14 @@
         "Mashroom Portal WebApp": {
             "adminApp": "Mashroom Portal Admin App",
             "defaultTheme": "Mashroom Portal Default Theme",
-            "warnBeforeAuthenticationExpiresSec": 120
+            "authenticationExpiration": {
+                "warnBeforeExpirationSec": 120
+            }
         },
         "Mashroom Portal Default Theme": {
-            "showEnvAndVersions": true
+            "showEnvAndVersions": true,
+            "showPortalAppHeaders": false,
+            "darkMode": "auto"
         },
         "Mashroom Session Middleware": {
             "provider": "memory",
@@ -44,6 +48,9 @@
             "users": "./users.json",
             "authenticationTimeoutSec": 1200,
             "loginPage": "/login"
+        },
+        "Mashroom Security Default Login Webapp": {
+            "darkMode": "auto"
         },
         "Mashroom Helmet Middleware": {
 

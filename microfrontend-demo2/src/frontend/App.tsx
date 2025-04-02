@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import fetchNextLaunch from "./fetchNextLaunch";
-import type {NextLaunch} from "../../type-definitions";
+import React, {useEffect, useState} from 'react';
+import fetchNextLaunch from './fetchNextLaunch';
+import * as styles from './App.scss';
+import type {NextLaunch} from '../../type-definitions';
 
-import * as styles from "./App.scss";
 
 type Props = {
     restProxyPath: string;
@@ -67,6 +67,6 @@ export default ({restProxyPath}: Props) => {
         <div className={styles.App}>
             {content}
         </div>
-    )
-}
+    );
+};
 

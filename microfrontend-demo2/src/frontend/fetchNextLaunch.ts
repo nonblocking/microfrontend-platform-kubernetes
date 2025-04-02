@@ -1,4 +1,4 @@
-import { NextLaunch } from "../../type-definitions";
+import type { NextLaunch } from '../../type-definitions';
 
 export default (restProxyPath: string): Promise<NextLaunch> => {
     return fetch(`${restProxyPath}/nextLaunch`)

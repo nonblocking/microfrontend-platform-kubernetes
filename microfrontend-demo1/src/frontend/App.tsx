@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
-import type {RandomJoke} from "../../type-definitions";
+import React, {useState, useEffect} from 'react';
 
-import * as styles from "./App.scss";
-import fetchJoke from "./fetchJoke";
+import * as styles from './App.scss';
+import fetchJoke from './fetchJoke';
+import type {RandomJoke} from '../../type-definitions';
 
 type Props = {
     restProxyPath: string;
@@ -44,4 +44,4 @@ export default ({restProxyPath}: Props) => {
             {content}
         </div>
     );
-}
+};

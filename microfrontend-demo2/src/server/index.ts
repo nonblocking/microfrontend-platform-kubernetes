@@ -1,7 +1,7 @@
 
+import path from 'path';
 import express, {Router} from 'express';
 import Pino from 'pino';
-import path from 'path';
 import nextLaunch from './routes/nextLaunch';
 import ready from './routes/ready';
 

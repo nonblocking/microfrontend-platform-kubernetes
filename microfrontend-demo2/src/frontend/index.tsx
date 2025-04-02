@@ -2,8 +2,8 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App';
+import type { MashroomPortalAppPluginBootstrapFunction } from '@mashroom/mashroom-portal/type-definitions';
 
-import { MashroomPortalAppPluginBootstrapFunction } from '@mashroom/mashroom-portal/type-definitions';
 
 const bootstrap: MashroomPortalAppPluginBootstrapFunction = (
     portalAppHostElement,

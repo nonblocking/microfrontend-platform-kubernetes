@@ -1,16 +1,16 @@
 
 .App {
-    padding: 10px;
+    padding: var(--mashroom-portal-spacing-default, 10px);
 
     table {
         width: auto;
+
         th {
             text-align: left;
-            border-bottom: 1px solid white;
         }
     }
 }
 
 .Error {
-    color: red;
+    color: var(--mashroom-portal-color-error, red);
 }

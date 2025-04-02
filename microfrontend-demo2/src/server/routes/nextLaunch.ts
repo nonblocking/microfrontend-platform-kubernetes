@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
 import fetch from 'node-fetch';
-import Pino from "pino";
-import {NextLaunch, RocketLaunchDotLiveResponse} from "../../../type-definitions";
+import Pino from 'pino';
+import type { Request, Response } from 'express';
+import type {NextLaunch, RocketLaunchDotLiveResponse} from '../../../type-definitions';
 
 const pino = Pino();
 
@@ -29,7 +29,7 @@ export default async (req: Request, res: Response): Promise<void> => {
     } catch (e: unknown) {
         pino.error(
             e as Record<string, unknown>,
-            "Looking up the next SpaceX flight failed",
+            'Looking up the next SpaceX flight failed',
         );
         res.sendStatus(500);
     }

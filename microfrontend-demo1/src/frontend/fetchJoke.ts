@@ -1,4 +1,4 @@
-import { RandomJoke } from "../../type-definitions/index";
+import type { RandomJoke } from '../../type-definitions/index';
 
 export default (restProxyPath: string): Promise<RandomJoke> => {
     return fetch(`${restProxyPath}/randomJoke`)

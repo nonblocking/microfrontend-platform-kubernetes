@@ -1,7 +1,7 @@
 
+import path from 'path';
 import express, {Router} from 'express';
 import Pino from 'pino';
-import path from 'path';
 import randomJoke from './routes/randomJoke';
 import ready from './routes/ready';
 
